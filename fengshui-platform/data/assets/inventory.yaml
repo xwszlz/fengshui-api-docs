@@ -1,0 +1,273 @@
+# 胡焱照人文风水平台 - 核心数据资产清单
+# 版本: v1.0 | 更新: 2025-11-27 | 维护: 数据工程组
+
+version: "1.0"
+updated: "2025-11-27"
+maintainer: "数据工程组"
+
+assets:
+  # 1. 理论文本语料库
+  - asset_id: "ASSET-THEORY-001"
+    name: "胡焱照30年田野笔记/录音/照片"
+    category: "理论文本语料"
+    source: "田野调查原始记录"
+    description: "5000+ 页手写笔记、500+ 小时录音、10000+ 张现场照片，覆盖 300+ 村落、500+ 案例"
+    format: "PDF/MP3/JPG/手写扫描件"
+    scale: "约 50 GB"
+    storage:
+      primary: "本地加密硬盘 (E:\胡焱照\RawData\FieldNotes)"
+      backup: "加密云盘 (阿里云 OSS / 腾讯云 COS)"
+    access_level: "核心团队只读"
+    status: "🟡 数字化进行中 (OCR/语音转文本/元数据标注)"
+    tags: ["一手资料", "原始证据", "需脱敏"]
+
+  - asset_id: "ASSET-THEORY-002"
+    name: "古籍文本语料库"
+    category: "理论文本语料"
+    source: "《周易》《葬书》《青囊经》《地理千金赋》《青囊奥语》《地理入门指掌诀》等 100+ 部经典"
+    description: "500 万+ 字经过清洗、分句、标注的古籍文本，含版本对校、注疏、实例"
+    format: "JSONL / XML-TEI / Markdown"
+    scale: "约 2 GB"
+    storage:
+      primary: "本地服务器 /data/corpus/classics"
+      backup: "Git LFS 仓库"
+    access_level: "核心团队读写"
+    status: "🟢 已就绪 (版本 v2.1)"
+    tags: ["标准语料", "版本对校", "知识抽取种子"]
+
+  - asset_id: "ASSET-THEORY-003"
+    name: "胡焱照核心著作/讲稿/论文全集"
+    category: "理论文本语料"
+    source: "6 部著作、300+ 场讲座录音转写、20+ 篇核心论文"
+    description: "理论体系最权威的文字表达，含完整目录、图表、案例引用、参考文献"
+    format: "PDF / Word / LaTeX / Markdown"
+    scale: "约 500 MB"
+    storage:
+      primary: "本地服务器 /data/corpus/huyanzhao_works"
+      backup: "Git 仓库 + 云盘"
+    access_level: "全团队可读"
+    status: "🟢 已就绪"
+    tags: ["权威文本", "理论源头", "本体构建基石"]
+
+  # 2. GIS 空间数据资产
+  - asset_id: "ASSET-GIS-001"
+    name: "全国 DEM/坡度/坡向/流向/流累积"
+    category: "GIS 空间数据"
+    source: "NASA SRTM 30m / ASTER GDEM 30m / 中国科学院 30m DEM"
+    description: "覆盖中国大陆全境，经投影校正、洼地填充、投影统一 (CGCS2000 / GK Zone)"
+    format: "GeoTIFF / Cloud Optimized GeoTIFF (COG)"
+    scale: "约 2 TB"
+    storage:
+      primary: "MinIO 对象存储 (内网) /s3/gis/dem"
+      backup: "阿里云 OSS / NAS"
+    access_level: "数据工程组读写、模型组只读"
+    status: "🟢 已就绪 (已入库 PostGIS/GeoServer)"
+    tags: ["基础地形", "模型输入", "全覆盖"]
+
+  - asset_id: "ASSET-GIS-002"
+    name: "多时相高分遥感影像/无人机倾斜摄影"
+    category: "GIS 空间数据"
+    source: "高分一号/二号/六号、商业卫星 (Maxar/Planet)、自购无人机倾斜摄影 (案例区域 50+ 平方公里)"
+    description: "0.5m-2m 分辨率，覆盖 30+ 重点案例区域，含正射影像 (DOM)、数字表面模型 (DSM)、三维实景模型 (OSGB/3D Tiles)"
+    format: "GeoTIFF / DOM / DSM / OSGB / 3D Tiles"
+    scale: "约 5 TB"
+    storage:
+      primary: "MinIO /s3/gis/remote_sensing"
+      backup: "本地冷存储硬盘阵列"
+    access_level: "项目组读写"
+    status: "🟡 部分就绪 (重点区域已入库 Cesium/GeoServer)"
+    tags: ["高分影像", "三维模型", "案例支撑"]
+
+  - asset_id: "ASSET-GIS-003"
+    name: "全国行政区划/交通/水系/POI/人口/经济/土地利用/生态红线"
+    category: "GIS 空间数据"
+    source: "自然资源部/统计局/交通部/生态环境部/商业数据采购 (高德/百度/腾讯/美团 POI)"
+    description: "矢量图层，统一坐标系 (CGCS2000)，拓扑校验，字段标准化，时间切片 (2010/2015/2020/2023)"
+    format: "GeoPackage / Shapefile / PostGIS 表"
+    scale: "约 200 GB"
+    storage:
+      primary: "PostGIS 数据库 (生产库) / GIS 专用实例"
+      backup: "GeoPackage 文件归档 / MinIO"
+    access_level: "全团队只读 (通过 GeoServer WFS/WMS)"
+    status: "🟢 已就绪 (已发布标准图层服务)"
+    tags: ["基础图层", "多源融合", "标准服务"]
+
+  # 3. 队列/表型/组学数据 (精算/健康模型核心)
+  - asset_id: "ASSET-COHORT-001"
+    name: "CKB (China Kadoorie Biobank) 数据子集"
+    category: "队列表型组学"
+    source: "牛津大学/中国疾控中心合作，申请获批"
+    description: "51 万+ 人队列，含问诊/体检/血样/基因型/表观组/蛋白组/代谢组/随访/死亡结局，已脱敏合规授权"
+    format: "Parquet / VCF / BED / CSV / HDF5"
+    scale: "约 10 TB (含基因组)"
+    storage:
+      primary: "合规安全环境 (独立物理隔离网络/加密存储/审计日志)"
+      backup: "异地灾备 (加密)"
+    access_level: "精算组/模型组核心成员 (实名申请/最小权限/水印追踪)"
+    status: "🟢 已就绪 (合规环境已部署)"
+    tags: ["大队列", "多组学", "长随访", "合规核心"]
+
+  - asset_id: "ASSET-COHORT-002"
+    name: "CHARLS / CLHLS / 百岁老人研究 / 自建队列"
+    category: "队列表型组学"
+    source: "北京大学/北京师范大学/中国科学院/自建社区队列"
+    description: "CHARLS 2 万+ 中老年、CLHLS 1 万+ 长寿老人、百岁老人 3000+、自建 10 万+ 社区健康档案，含表型/基因型/表观组/随访/生存结局"
+    format: "Stata / SPSS / CSV / Parquet / VCF"
+    scale: "约 3 TB"
+    storage:
+      primary: "合规安全环境 /data/cohorts/charls_clhls"
+      backup: "加密归档"
+    access_level: "精算组/模型组核心成员"
+    status: "🟢 已就绪"
+    tags: ["老龄队列", "长寿表型", "多组学", "长随访"]
+
+  - asset_id: "ASSET-COHORT-003"
+    name: "精算专用数据/中国人寿表/行业经验率/自产经验率"
+    category: "精算专用数据"
+    source: "中国精算师协会/保险行业协会/自产精算数据"
+    description: "中国第 4/5/6/7 次人寿表、行业经验死亡率/疾病率/退保率/费用率、自产 10 万+ 保单经验率、重疾/医疗/寿险/年金分险种经验率"
+    format: "Excel / CSV / Parquet / 数据库表"
+    scale: "约 10 GB"
+    storage:
+      primary: "精算数据库 (PostgreSQL + TimescaleDB) / actuarial_db"
+      backup: "加密归档 / 版本控制"
+    access_level: "精算师/首席精算师 读写"
+    status: "🟢 已就绪 (已建立精算数据仓库)"
+    tags: ["精算核心", "定价依据", "储备测算", "监管报送"]
+
+  # 4. 模型权重/工件 (MLOps)
+  - asset_id: "ASSET-MODEL-001"
+    name: "龙脉识别 v2.0 (U-Net++ / ResNet50 backbone)"
+    category: "模型权重"
+    source: "自研训练 (DEM + 遥感 + 实地标注 5000+ 样本)"
+    description: "IoU 0.83+，输入 256x256 DEM 切片，输出龙脉/穴场/砂水/朝案/水口 5 类语义分割"
+    format: "PyTorch .pt / ONNX / Safetensors"
+    scale: "约 500 MB"
+    storage:
+      primary: "HF Hub 私有仓库 xwszlz/fengshui-v2/dragon_vein"
+      backup: "MLflow Model Registry / MinIO /model_artifacts/dragon_vein_v2"
+    access_level: "模型组读写、部署组只读"
+    version: "v2.0.0"
+    status: "🟢 已验收 (IoU 0.832)"
+    tags: ["CV分割", "核心模型", "生产就绪"]
+
+  - asset_id: "ASSET-MODEL-002"
+    name: "穴场/多任务检测 v2.0 (YOLOv8-x / 多头)"
+    category: "模型权重"
+    source: "自研训练 (高分遥感/倾斜摄影 20000+ 标注框)"
+    description: "mAP@0.5 0.91+，穴场/明堂/朝案/水口/零堂 5 类检测 + 关键点回归"
+    format: "PyTorch .pt / ONNX / Safetensors"
+    scale: "约 600 MB"
+    storage:
+      primary: "HF Hub xwszlz/fengshui-v2/acupoint"
+      backup: "MLflow / MinIO /model_artifacts/acupoint_v2"
+    access_level: "模型组读写、部署组只读"
+    version: "v2.0.0"
+    status: "🟢 已验收 (mAP 0.912)"
+    tags: ["多任务检测", "核心模型", "生产就绪"]
+
+  - asset_id: "ASSET-MODEL-003"
+    name: "暴露组学 10 因子时空插值 v2.0 (ST-Kriging / DeepST)"
+    category: "模型权重"
+    source: "自研训练 (国家站点/卫星反演/模式同化 10 年逐日数据)"
+    description: "PM2.5/PM10/O3/NO2/SO2/CO/温度/湿度/NDVI/噪声/蓝色空间 10 因子，1km/日分辨率，PICP 97%+"
+    format: "PyTorch .pt / ONNX / NetCDF"
+    scale: "约 2 GB"
+    storage:
+      primary: "HF Hub xwszlz/fengshui-v2/exposome"
+      backup: "MLflow / MinIO /model_artifacts/exposome_v2"
+    access_level: "模型组读写、部署组只读"
+    version: "v2.0.0"
+    status: "🟢 已验收 (PM2.5 R² 0.92)"
+    tags: ["时空插值", "环境暴露", "不确定性量化"]
+
+  - asset_id: "ASSET-MODEL-004"
+    name: "Chinese-GrimAge v2.0 / PhenoAge / DunedinPACE / 精算生存模型集成"
+    category: "模型权重"
+    source: "自研训练 (CKB/CHARLS/CLHLS/百岁/自建队列 表观组/表型/生存)"
+    description: "表观遗传时钟/表型年龄/衰老速度 + Cox/随机森林/XGBoost/SuperLearner 集成，C-index 0.87，Level 1A 假设 10/10"
+    format: "PyTorch .pt / ONNX / Pickle / PMML"
+    scale: "约 1 GB"
+    storage:
+      primary: "HF Hub xwszlz/fengshui-v2/actuarial"
+      backup: "MLflow / MinIO /model_artifacts/actuarial_v2"
+    access_level: "精算组/模型组核心成员"
+    version: "v2.0.0"
+    status: "🟢 已验收 (C-index 0.871)"
+    tags: ["精算生存", "表观遗传", "集成模型", "Level 1A"]
+
+  # 5. 精算因子/寿命表/保费率/储备因子
+  - asset_id: "ASSET-ACTUARIAL-001"
+    name: "精算因子库/寿命表/经验率/保费率/储备因子"
+    category: "精算因子数据"
+    source: "中国精算师协会/行业协会/自产/监管报送标准"
+    description: "中国第 4-7 次人寿表、分年龄/性别/职业/地区/险种经验率、风险保费率/储备金因子/红利演示利率/偿付能力因子"
+    format: "PostgreSQL 表 / Parquet / Excel"
+    scale: "约 5 GB"
+    storage:
+      primary: "精算数据库 actuarial_factors (PostgreSQL + TimescaleDB)"
+      backup: "加密归档 / 版本控制"
+    access_level: "首席精算师/精算团队 读写"
+    status: "🟢 已就绪 (已建立因子治理流程)"
+    tags: ["精算核心", "定价依据", "监管报送", "因子治理"]
+
+  # 6. 知识图谱/本体
+  - asset_id: "ASSET-KG-001"
+    name: "人文风水核心本体 (OWL/RDF)"
+    category: "知识图谱/本体"
+    source: "本体工程团队构建 (易学/风水/精算/文明互鉴 四大子本体)"
+    description: "核心类 200+、属性 500+、关系 300+、公理 1000+，含 SHACL 约束、SPARQL 模板、自然语言标签 (中/英)"
+    format: "OWL (RDF/XML) / Turtle / JSON-LD / SHACL"
+    scale: "约 50 MB"
+    storage:
+      primary: "Git 仓库 ontology/huyanzhao-core + Fuseki 三元组存储"
+      backup: "Git LFS / 云盘"
+    access_level: "知识工程组读写、全团队只读"
+    status: "🟡 构建中 (v0.3)"
+    tags: ["本体核心", "语义互操作", "推理基础"]
+
+  - asset_id: "ASSET-KG-002"
+    name: "人文风水知识图谱 (Neo4j)"
+    category: "知识图谱/本体"
+    source: "从文本/案例/数据自动抽取 + 专家校验 (实体 50k+、关系 200k+、属性 1M+)"
+    description: "易学/地理/人文/精算/案例/法规/标准/文献/专家/机构 九大领域，含谱系/传承/因果/空间/时间/语义关系"
+    format: "Neo4j 数据库 / Cypher 导出 / GraphML"
+    scale: "约 10 GB (数据库)"
+    storage:
+      primary: "Neo4j 4.4+ 集群 (生产) / Bolt 协议"
+      backup: "Cypher 脚本定期导出 / 云盘"
+    access_level: "知识工程组读写、应用组通过 GraphQL/API 只读"
+    status: "🟡 构建中 (实体 12k+、关系 45k+)"
+    tags: ["知识图谱", "语义检索", "推理引擎", "智能问答"]
+
+  # 7. 标准/规范/法规/政策语料
+  - asset_id: "ASSET-STD-001"
+    name: "国家/行业/团体/地方标准全文库 (风水/规划/生态/精算/非遗/文保/数据安全)"
+    category: "标准规范语料"
+    source: "全国标准信息公共服务平台/各部委/省厅/行业协会/地方标准化技术委员会"
+    description: "GB/T、GB、JGJ、CJJ、T/CECS、DB、ISO/TC 相关标准 200+ 份，全文 PDF/Word + 结构化解析 (条款/指标/引用/修订历史)"
+    format: "PDF / Word / XML / JSON (结构化)"
+    scale: "约 2 GB"
+    storage:
+      primary: "本地服务器 /data/standards + Elasticsearch 全文检索"
+      backup: "云盘 / Git LFS"
+    access_level: "全团队可读"
+    status: "🟢 已就绪 (已建立标准订阅/更新机制)"
+    tags: ["合规依据", "标准跟踪", "指标提取"]
+
+  # 8. 案例/项目交付档案
+  - asset_id: "ASSET-CASE-001"
+    name: "30 个标杆案例完整交付档案"
+    category: "案例档案"
+    source: "项目实施全过程产出"
+    description: "每案例含：立项书/调研报告/理论应用记录/数据清单/模型版本/中间成果/最终交付件/验收报告/客户反馈/复盘总结/知识沉淀"
+    format: "PDF / Word / Excel / 代码 / 模型 / GIS / 视频 / PPT"
+    scale: "约 200 GB"
+    storage:
+      primary: "项目归档系统 (MinIO /cases/2024-2025) + 索引数据库"
+      backup: "冷存储 / 云盘"
+    access_level: "项目组/交付组/知识工程组"
+    status: "🟢 已归档 (catalog.csv 为索引)"
+    tags: ["交付证据", "知识沉淀", "复用素材", "营销素材"]
+
+---
