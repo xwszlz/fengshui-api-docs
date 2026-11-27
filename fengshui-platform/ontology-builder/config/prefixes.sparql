@@ -1,0 +1,34 @@
+# SPARQL 查询通用前缀声明
+# 所有 SPARQL 查询文件、脚本、模板必须包含此前缀块
+
+PREFIX hfsco: <http://huyanzhao.org/ontology/hfsco#>
+PREFIX hfsco-yj: <http://huyanzhao.org/ontology/hfsco/yijing#>
+PREFIX hfsco-geo: <http://huyanzhao.org/ontology/hfsco/geography#>
+PREFIX hfsco-eco: <http://huyanzhao.org/ontology/hfsco/ecology#>
+PREFIX hfsco-act: <http://huyanzhao.org/ontology/hfsco/actuarial#>
+PREFIX hfsco-ext: <http://huyanzhao.org/ontology/hfsco/extension#>
+
+PREFIX bfo: <http://purl.obolibrary.org/obo/bfo/2.0#>
+PREFIX dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX ssn: <http://www.w3.org/ns/ssn/>
+PREFIX geosparql: <http://www.opengis.net/ont/geosparql#>
+PREFIX geo: <http://www.opengis.net/ont/geo#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX shacl: <http://www.w3.org/ns/shacl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+PREFIX chebi: <http://purl.obolibrary.org/obo/chebi#>
+PREFIX go: <http://purl.obolibrary.org/obo/go#>
+PREFIX om: <http://www.ontology-of-units-of-measure.org/resource/om-2/>
+PREFIX qudt: <http://qudt.org/schema/qudt/>
+PREFIX schema: <http://schema.org/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
+PREFIX time: <http://www.w3.org/2006/time#>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>

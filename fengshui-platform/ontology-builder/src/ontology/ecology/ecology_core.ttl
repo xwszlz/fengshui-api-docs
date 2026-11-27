@@ -1,0 +1,194 @@
+@prefix hfsco: <http://huyanzhao.org/ontology/hfsco#> .
+@prefix hfsco-eco: <http://huyanzhao.org/ontology/hfsco/ecology#> .
+@prefix hfsco-yj: <http://huyanzhao.org/ontology/hfsco/yijing#> .
+@prefix hfsco-geo: <http://huyanzhao.org/ontology/hfsco/geography#> .
+@prefix hfsco-act: <http://huyanzhao.org/ontology/hfsco/actuarial#> .
+@prefix bfo: <http://purl.obolibrary.org/obo/bfo/2.0#> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssn: <http://www.w3.org/ns/sosa/> .
+@prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+@prefix geo: <http://www.opengis.net/ont/geo#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix shacl: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# 人文生态本体核心模块 (Human Ecology Ontology)
+# 来源：田野调查笔记/族谱/口述史/统计年鉴/心理量表/访谈录音/社会学/人类学/环境心理学/文化地理学
+# 核心概念：聚落/族群/姓氏/记忆/产业/心理/社群/传承/治理/场所依恋/文化认同/社会资本/生态系统服务
+# 对齐：DUL / SSN-SOSA / PROV-O / Schema.org / SKOS / SSO (Social Science Ontology)
+# ============================================================
+
+hfsco-eco: a owl:Ontology ;
+    rdfs:label "人文生态本体"@zh, "Human Ecology Ontology"@en ;
+    rdfs:comment "建模人文生态核心要素：聚落空间/族群结构/姓氏谱系/聚落记忆/产业形态/心理安全感/场所依恋/社群凝聚力/文化传承/社会治理/生态系统服务/文化生态系统服务。对齐 DUL/SSN-SOSA/PROV-O/Schema.org/SKO/SSO。"@zh ;
+    dcterms:source "田野调查笔记/族谱/口述史/统计年鉴/心理量表/访谈录音/社会学/人类学/环境心理学/文化地理学" ;
+    dcterms:creator "胡焱照/知识工程组" ;
+    owl:versionInfo "0.1.0" .
+
+# ============================================================
+# 核心类：人文生态实体
+# ============================================================
+
+hfsco-eco:Settlement a owl:Class ;
+    rdfs:label "聚落/村落/社区"@zh, "Settlement / Village / Community"@en ;
+    rdfs:comment "人类群体聚居的空间单元：自然村/行政村/社区/街区/镇区/城市/都市圈。核心：空间边界/人口规模/族群构成/产业结构/公共设施/文化设施/治理结构/风水格局/生态环境/历史记忆。对应地理 hfsco-geo:Village。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity, hfsco-geo:HumanLandscape ;
+    dcterms:source "《文化地理学》《人类学》《传统聚落研究》" .
+
+hfsco-eco:Clan a owl:Class ;
+    rdfs:label "族群/宗族/姓氏群体"@zh, "Clan / Lineage / Surname Group"@en ;
+    rdfs:comment "基于血缘/姓氏/祖先崇拜/族谱/祠堂/祭祀/宗法规则/家族规约/家族资产/家族声望形成的社会群体。核心：始迁祖/世系/分支/支系/族规/族约/祠堂/祭祀/族产/族田/族学/族谱/口述史/家族记忆/家族荣誉/家族使命。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity ;
+    dcterms:source "《宗族社会学》《中国族群研究》《族谱学》" .
+
+hfsco-eco:Surname a owl:Class ;
+    rdfs:label "姓氏/姓氏谱系"@zh, "Surname / Surname Lineage"@en ;
+    rdfs:comment "中国姓氏系统：单姓/复姓/姓氏起源/得姓始祖/迁徙路线/分布热点/人口规模/姓氏文化/姓氏认同/同姓不婚/姓氏联谊/寻根问祖。核心：百家姓/大姓/稀姓/姓氏地理分布/姓氏聚类/姓氏与风水/姓氏与族群/姓氏与产业。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity ;
+    dcterms:source "《百家姓》《中国姓氏地理》《姓氏文化》" .
+
+hfsco-eco:CollectiveMemory a owl:Class ;
+    rdfs:label "聚落记忆/集体记忆"@zh, "Collective Memory / Village Memory"@en ;
+    rdfs:comment "聚落群体共享的历史记忆：起源传说/迁徙史/战争/灾荒/瘟疫/丰收/名人/事件/传说/传统/习俗/节日/仪式/禁忌/地名由来/古树古井古道古桥古塔古碑古井古道/口述史/族谱/碑记/家谱/地方志/方志/家训/家规/家风。核心：记忆载体/记忆主体/记忆内容/记忆传承/记忆重构/记忆认同/记忆冲突/记忆保护/记忆激活。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity ;
+    dcterms:source "《集体记忆社会学》《口述史学》《文化地理学》" .
+
+hfsco-eco:IndustryPattern a owl:Class ;
+    rdfs:label "产业形态/生计方式"@zh, "Industry Pattern / Livelihood Pattern"@en ;
+    rdfs:comment "聚落群体的生产生活方式：农/林/牧/渔/工/商/服/旅/文/创/教/医/养/新业态。核心：主导产业/产业结构/产业链/产业集群/产业集聚/产业转型/产业升级/产业融合/产业生态/产业风水/产业与聚落空间/产业与族群/产业与记忆/产业与生态。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity ;
+    dcterms:source "《产业地理学》《乡村振兴》《生计多样化》" .
+
+hfsco-eco:PsychologicalSecurity a owl:Class ;
+    rdfs:label "心理安全感/场所依恋"@zh, "Psychological Security / Place Attachment"@en ;
+    rdfs:comment "个体/群体对居住环境的心理感知：安全感/归属感/认同感/自豪感/掌控感/舒适度/满意度/幸福感/焦虑/恐惧/压力/应激/应对/韧性/适应/意义感/价值感/自我效能/集体效能。核心量表：场所依恋量表/心理安全感量表/环境心理量表/生活满意度量表/主观幸福感量表/社区凝聚力量表。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiQuality ;
+    dcterms:source "《环境心理学》《场所依恋理论》《社区心理学》" .
+
+hfsco-eco:SocialCohesion a owl:Class ;
+    rdfs:label "社群凝聚力/社会资本"@zh, "Social Cohesion / Social Capital"@en ;
+    rdfs:comment "群体内部连接紧密程度：信任/互助/互惠/规范/网络/参与/共识/共享愿景/集体行动/冲突解决/共同利益/公共产品/治理效能/社区治理/自治/共治/共享/共享愿景/共享价值/共享目标。核心：纽带资本/桥梁资本/连接资本/结构洞/网络密度/中心度/聚类系数/模块度。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiQuality ;
+    dcterms:source "《社会资本理论》《社区凝聚力》《集体行动理论》" .
+
+hfsco-eco:CulturalHeritage a owl:Class ;
+    rdfs:label "文化遗产/非遗/传统技艺"@zh, "Cultural Heritage / Intangible Cultural Heritage"@en ;
+    rdfs:comment "物质/非物质文化遗产：古建筑/古遗址/古墓葬/石窟寺/石刻/近现代史迹/代表性建筑/传统技艺/传统医药/民间文学/传统音乐/传统舞蹈/传统戏剧/曲艺/传统体育/游艺与杂技/传统美术/传统工艺/传统医药/民俗/传统节日/传统礼仪/传统游艺/传统饮食/传统服饰/传统建筑营造技艺/传统手工技艺/传统农耕技艺/传统渔猎技艺/传统畜牧技艺/传统手工艺/传统生活技艺。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity ;
+    dcterms:source "《非物质文化遗产保护法》《文化遗产保护》" .
+
+hfsco-eco:Governance a owl:Class ;
+    rdfs:label "社会治理/社区治理/自治"@zh, "Governance / Community Governance / Self-Governance"@en ;
+    rdfs:comment "聚落/社区治理体系：村委会/党支部/村民代表会议/村规民约/理事会/合作社/社工站/网格化/网格员/智慧治理/数字化治理/精细化治理/共建共治共享/党建引领/多元共治/法治/德治/自治/智治/信用治理/网格化治理/问题导向/结果导向/满意度导向。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiProcess ;
+    dcterms:source "《基层治理》《社区治理》《乡村治理》" .
+
+hfsco-eco:EcosystemService a owl:Class ;
+    rdfs:label "生态系统服务/文化生态系统服务"@zh, "Ecosystem Service / Cultural Ecosystem Service"@en ;
+    rdfs:comment "自然/人文环境提供给人类的效益：供给服务(粮食/水/木材/药材/能源)/调节服务(气候/水文/水质/土壤/病虫害/授粉/碳汇/微气候/负氧离子)/支持服务(土壤形成/养分循环/初级生产/生物多样性/基因库/物种库/生境/生态廊道/生态安全格局)/文化服务(审美/休闲/旅游/教育/科学/精神/文化/身份/归属/遗产/传承/灵感/艺术/宗教/信仰/场所感/心理健康/社区凝聚/社会资本/文化认同/文化多样性/文化传承/文化创新)。风水'吉庆/福泽/富贵/长寿/康宁/好德/善终'的现代表达。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiQuality ;
+    dcterms:source "《千年生态系统评估》《生态系统服务评估》《文化生态系统服务》" .
+
+hfsco-eco:PlaceIdentity a owl:Class ;
+    rdfs:label "场所认同/文化认同"@zh, "Place Identity / Cultural Identity"@en ;
+    rdfs:comment "个体/群体对特定场所的认同感：归属感/自豪感/独特性/连续性/自尊/自我延伸/群体区分/边界维护/象征意义/叙事建构/记忆锚定/仪式确认/符号标记/景观标识/文化地标/精神地标/精神家园/心灵归宿/根脉寻找/寻根问祖/认祖归宗。"@zh ;
+    rdfs:subClassOf hfsco-eco:PsychologicalSecurity ;
+    dcterms:source "《场所认同理论》《文化认同理论》《环境心理学》" .
+
+# ============================================================
+# 核心关系 (人文生态特有)
+# ============================================================
+
+hfsco-eco:hasCollectiveMemory a owl:ObjectProperty ;
+    rdfs:label "具有集体记忆"@zh, "has collective memory"@en ;
+    rdfs:domain hfsco-eco:Settlement ;
+    rdfs:range hfsco-eco:CollectiveMemory ;
+    rdfs:comment "聚落具有特定的集体记忆内容"@zh .
+
+hfsco-eco:hasIndustryPattern a owl:ObjectProperty ;
+    rdfs:label "具有产业形态"@zh, "has industry pattern"@en ;
+    rdfs:domain hfsco-eco:Settlement ;
+    rdfs:range hfsco-eco:IndustryPattern ;
+    rdfs:comment "聚落具有特定的产业形态/生计方式"@zh .
+
+hfsco-eco:hasPsychologicalSecurity a owl:ObjectProperty ;
+    rdfs:label "具有心理安全感"@zh, "has psychological security"@en ;
+    rdfs:domain hfsco-eco:Settlement ;
+    rdfs:range hfsco-eco:PsychologicalSecurity ;
+    rdfs:comment "聚落群体具有特定水平的心理安全感/场所依恋"@zh .
+
+hfsco-eco:hasSocialCohesion a owl:ObjectProperty ;
+    rdfs:label "具有社群凝聚力"@zh, "has social cohesion"@en ;
+    rdfs:domain hfsco-eco:Settlement ;
+    rdfs:range hfsco-eco:SocialCohesion ;
+    rdfs:comment "聚落具有特定水平的社群凝聚力/社会资本"@zh .
+
+hfsco-eco:inheritsCulturalHeritage a owl:ObjectProperty ;
+    rdfs:label "传承文化遗产"@zh, "inherits cultural heritage"@en ;
+    rdfs:domain hfsco-eco:Clan ;
+    rdfs:range hfsco-eco:CulturalHeritage ;
+    rdfs:comment "族群传承特定文化遗产/非遗/传统技艺"@zh .
+
+hfsco-eco:governs a owl:ObjectProperty ;
+    rdfs:label "治理/管辖"@zh, "governs"@en ;
+    rdfs:domain hfsco-eco:Governance ;
+    rdfs:range hfsco-eco:Settlement ;
+    rdfs:comment "治理体系管辖特定聚落/社区"@zh .
+
+hfsco-eco:providesEcosystemService a owl:ObjectProperty ;
+    rdfs:label "提供生态系统服务"@zh, "provides ecosystem service"@en ;
+    rdfs:domain hfsco-geo:HumanLandscape ;
+    rdfs:range hfsco-eco:EcosystemService ;
+    rdfs:comment "人文/自然景观提供特定生态系统服务"@zh .
+
+hfsco-eco:hasPlaceIdentity a owl:ObjectProperty ;
+    rdfs:label "具有场所认同"@zh, "has place identity"@en ;
+    rdfs:domain hfsco-eco:Settlement ;
+    rdfs:range hfsco-eco:PlaceIdentity ;
+    rdfs:comment "聚落群体具有特定的场所认同/文化认同"@zh .
+
+# ============================================================
+# 种子实例
+# ============================================================
+
+hfsco-eco:longchuan-settlement a hfsco-eco:Settlement ;
+    rdfs:label "龙川聚落"@zh, "Longchuan Settlement"@en ;
+    rdfs:comment "安徽绩溪龙川村聚落，胡宗宪家族聚居地，国家级历史文化名村，5A景区"@zh ;
+    hfsco:hasCoordinate "118.15,29.85" ;
+    hfsco-eco:hasCollectiveMemory hfsco-eco:memory-longchuan ;
+    hfsco-eco:hasIndustryPattern hfsco-eco:industry-tourism-culture ;
+    hfsco-eco:hasPsychologicalSecurity hfsco-eco:security-longchuan ;
+    hfsco-eco:hasSocialCohesion hfsco-eco:cohesion-longchuan ;
+    hfsco-eco:hasPlaceIdentity hfsco-eco:identity-longchuan .
+
+hfsco-eco:clan-hu a hfsco-eco:Clan ;
+    rdfs:label "胡氏宗族(龙川)"@zh, "Hu Clan (Longchuan)"@en ;
+    rdfs:comment "龙川胡氏，始迁祖胡荣，胡宗宪家族，族谱完备，祠堂宏伟，族规严明，族田族学完备"@zh ;
+    hfsco-eco:inheritsCulturalHeritage hfsco-eco:heritage-hu-clan .
+
+hfsco-eco:memory-longchuan a hfsco-eco:CollectiveMemory ;
+    rdfs:label "龙川集体记忆"@zh, "Longchuan Collective Memory"@en ;
+    rdfs:comment "胡宗宪抗倭/家族兴衰/族规传承/古树传说/古井故事/古桥传说/戏台记忆/非遗技艺/家族荣誉/家族使命"@zh .
+
+hfsco-eco:industry-tourism-culture a hfsco-eco:IndustryPattern ;
+    rdfs:label "文旅融合/文化产业"@zh, "Cultural Tourism Industry"@en ;
+    rdfs:comment "以文化遗产/风水文化/家族文化/非遗体验/研学旅行/康养度假为核心的文旅融合产业"@zh .
+
+hfsco-eco:security-longchuan a hfsco-eco:PsychologicalSecurity ;
+    rdfs:label "龙川心理安全感"@zh, "Longchuan Psychological Security"@en ;
+    rdfs:comment "村民对居住环境高度认同，归属感强，场所依恋深，生活满意度高，焦虑水平低"@zh .
+
+hfsco-eco:cohesion-longchuan a hfsco-eco:SocialCohesion ;
+    rdfs:label "龙川社群凝聚力"@zh, "Longchuan Social Cohesion"@en ;
+    rdfs:comment "村民互信互助，族规约束，公共事务参与度高，冲突解决机制有效，集体行动能力强"@zh .
+
+hfsco-eco:identity-longchuan a hfsco-eco:PlaceIdentity ;
+    rdfs:label "龙川场所认同"@zh, "Longchuan Place Identity"@en ;
+    rdfs:comment "村民以'龙川人'为荣，文化认同深厚，族群边界清晰，精神家园稳固"@zh .

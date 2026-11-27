@@ -1,0 +1,203 @@
+version: '3.8'
+
+services:
+  # ============================================================
+  # Fuseki - Apache Jena SPARQL 端点 (主三元组存储)
+  # ============================================================
+  fuseki:
+    image: stain/jena-fuseki:4.10.0
+    container_name: fengshui-fuseki
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./fuseki-data:/fuseki
+      - ./fuseki-config:/fuseki-config
+    environment:
+      - ADMIN_PASSWORD=admin
+      - JVM_ARGS=-Xmx4g -Xms2g
+    command: >
+      /jena-fuseki/fuseki-server
+      --config=/fuseki-config/config.ttl
+      --update
+      --mem=4096
+    networks:
+      - fengshui-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3030/$/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ============================================================
+  # Neo4j - 图数据库 (知识图谱/推理/图算法)
+  # ============================================================
+  neo4j:
+    image: neo4j:5.15-community
+    container_name: fengshui-neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ./neo4j-data:/data
+      - ./neo4j-logs:/logs
+      - ./neo4j-import:/var/lib/neo4j/import
+      - ./neo4j-plugins:/plugins
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_dbms_memory_heap_max__size=4G
+      - NEO4J_dbms_memory_pagecache_size=2G
+      - NEO4J_dbms_security_procedures_unrestricted=gds.*,apoc.*
+      - NEO4JLABS_PLUGINS=["graph-data-science", "apoc"]
+    networks:
+      - fengshui-net
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "password", "RETURN 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================================
+  # GraphDB - Ontotext 语义图数据库 (推理/OWL/规则)
+  # ============================================================
+  graphdb:
+    image: ontotext/graphdb:10.6.1
+    container_name: fengshui-graphdb
+    ports:
+      - "7200:7200"
+    volumes:
+      - ./graphdb-data:/opt/graphdb/home
+      - ./graphdb-import:/opt/graphdb/import
+      - ./graphdb-workbench:/opt/graphdb/workbench
+    environment:
+      - GDB_HEAP_SIZE=4g
+      - GDB_JAVA_OPTS=-Xmx4g -Xms2g
+    networks:
+      - fengshui-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7200/rest/repositories"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================================
+  # MinIO - 对象存储 (模型权重/数据集/归档/备份)
+  # ============================================================
+  minio:
+    image: minio/minio:RELEASE.2024-06-15T17-19-04Z
+    container_name: fengshui-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio-data:/data
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server /data --console-address ":9001"
+    networks:
+      - fengshui-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ============================================================
+  # PostgreSQL + PostGIS - 关系/空间数据库 (精算/结构化/向量)
+  # ============================================================
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: fengshui-postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_DB=fengshui
+      - POSTGRES_USER=fengshui
+      - POSTGRES_PASSWORD=fengshui123
+      - POSTGRES_MAX_CONNECTIONS=200
+      - POSTGRES_SHARED_BUFFERS=1GB
+    networks:
+      - fengshui-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fengshui -d fengshui"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ============================================================
+  # Redis - 缓存/会话/任务队列/分布式锁
+  # ============================================================
+  redis:
+    image: redis:7.2-alpine
+    container_name: fengshui-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
+    networks:
+      - fengshui-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================
+  # Elasticsearch - 全文检索/日志/指标/标准语料检索
+  # ============================================================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.2
+    container_name: fengshui-elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./es-data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - cluster.name=fengshui-es
+    networks:
+      - fengshui-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================================
+  # MinIO Console (已包含在 minio 服务中，端口 9001)
+  # ============================================================
+
+  # ============================================================
+  # Fuseki 配置卷 (需单独准备 config.ttl)
+  # ============================================================
+
+networks:
+  fengshui-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  fuseki-data:
+  neo4j-data:
+  neo4j-logs:
+  graphdb-data:
+  minio-data:
+  postgres-data:
+  redis-data:
+  es-data:

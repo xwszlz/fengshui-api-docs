@@ -1,0 +1,50 @@
+# 命名空间前缀定义 (统一全工程使用)
+# 格式: prefix: uri
+# 所有本体文件、SPARQL、SHACL、代码必须使用这些前缀
+
+prefixes:
+  # 核心本体命名空间
+  hfsco: "http://huyanzhao.org/ontology/hfsco#"
+  hfsco-yj: "http://huyanzhao.org/ontology/hfsco/yijing#"
+  hfsco-geo: "http://huyanzhao.org/ontology/hfsco/geography#"
+  hfsco-eco: "http://huyanzhao.org/ontology/hfsco/ecology#"
+  hfsco-act: "http://huyanzhao.org/ontology/hfsco/actuarial#"
+  hfsco-ext: "http://huyanzhao.org/ontology/hfsco/extension#"
+
+  # 上层/标准本体对齐
+  bfo: "http://purl.obolibrary.org/obo/bfo/2.0#"
+  dul: "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#"
+  sosa: "http://www.w3.org/ns/sosa/"
+  ssn: "http://www.w3.org/ns/ssn/"
+  geosparql: "http://www.opengis.net/ont/geosparql#"
+  geo: "http://www.opengis.net/ont/geo#"
+  prov: "http://www.w3.org/ns/prov#"
+  skos: "http://www.w3.org/2004/02/skos/core#"
+  shacl: "http://www.w3.org/ns/shacl#"
+  xsd: "http://www.w3.org/2001/XMLSchema#"
+  rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+  owl: "http://www.w3.org/2002/07/owl#"
+
+  # 外部参考本体
+  chebi: "http://purl.obolibrary.org/obo/chebi#"
+  go: "http://purl.obolibrary.org/obo/go#"
+  obo: "http://purl.obolibrary.org/obo/"
+  om: "http://www.ontology-of-units-of-measure.org/resource/om-2/"
+  qudt: "http://qudt.org/schema/qudt/"
+  schema: "http://schema.org/"
+  dcterms: "http://purl.org/dc/terms/"
+  foaf: "http://xmlns.com/foaf/0.1/"
+  vcard: "http://www.w3.org/2006/vcard/ns#"
+  time: "http://www.w3.org/2006/time#"
+  wgs84: "http://www.w3.org/2003/01/geo/wgs84_pos#"
+
+# 命名空间策略规则
+rules:
+  - "所有新增类/属性必须使用上述 hfsco-* 前缀之一"
+  - "禁止自造命名空间，禁止使用默认命名空间"
+  - "实例 URI 使用 kebab-case: hfsco:dragon-vein-001"
+  - "类使用 PascalCase: hfsco-yj:DragonVein"
+  - "对象属性使用 camelCase 动词开头: hfsco-yj:hasPart"
+  - "数据属性使用 camelCase 名词/形容词: hfsco-yj:hasConfidenceScore"
+  - "所有类/属性必须有 rdfs:label (zh/en) 和 rdfs:comment"

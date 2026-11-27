@@ -1,0 +1,39 @@
+@prefix : <#> .
+@prefix fuseki: <http://jena.apache.org/fuseki#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix tdb: <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix fuseki: <http://jena.apache.org/fuseki#> .
+
+# Fuseki 主数据集配置
+:dataset a ja:RDFDataset ;
+    ja:defaultGraph <#graph> ;
+    rdfs:label "Feng Shui Core Ontology Dataset" .
+
+# 主图谱 - TDB2 持久化存储
+:graph a ja:Model ;
+    ja:base <http://huyanzhao.org/ontology/hfsco#> ;
+    rdfs:label "Feng Shui Core Ontology Graph" .
+
+# TDB2 数据集配置 (持久化)
+:tdbDataset a tdb:DatasetTDB ;
+    tdb:location "/fuseki/databases/hfsco" ;
+    tdb:unionDefaultGraph true .
+
+# Fuseki 服务配置
+:service a fuseki:Service ;
+    fuseki:name "hfsco" ;
+    fuseki:dataset :tdbDataset ;
+    fuseki:serviceQuery "query" ;
+    fuseki:serviceUpdate "update" ;
+    fuseki:serviceUpload "upload" ;
+    fuseki:serviceReadWriteGraphStore "data" ;
+    fuseki:serviceReadGraphStore "get" ;
+    fuseki:serviceSPARQLQuery "sparql" ;
+    fuseki:serviceSPARQLUpdate "update" ;
+    fuseki:serviceGraphStore "data" .
+
+# 默认配置入口
+[] ja:loadClass "org.apache.jena.tdb.TDB" .
+[] ja:loadClass "org.apache.jena.fuseki.FusekiModule" .

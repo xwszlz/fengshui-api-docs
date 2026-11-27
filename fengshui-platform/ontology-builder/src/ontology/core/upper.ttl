@@ -1,0 +1,164 @@
+@prefix hfsco: <http://huyanzhao.org/ontology/hfsco#> .
+@prefix hfsco-yj: <http://huyanzhao.org/ontology/hfsco/yijing#> .
+@prefix hfsco-geo: <http://huyanzhao.org/ontology/hfsco/geography#> .
+@prefix hfsco-eco: <http://huyanzhao.org/ontology/hfsco/ecology#> .
+@prefix hfsco-act: <http://huyanzhao.org/ontology/hfsco/actuarial#> .
+@prefix bfo: <http://purl.obolibrary.org/obo/bfo/2.0#> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssn: <http://www.w3.org/ns/ssn/> .
+@prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+@prefix geo: <http://www.opengis.net/ont/geo#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix shacl: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# 胡焱照人文风水核心本体 - 核心上层模块
+# 对齐 BFO 2.0 / DUL / SSN-SOSA / GeoSPARQL / PROV-O
+# ============================================================
+
+hfsco: a owl:Ontology ;
+    rdfs:label "胡焱照人文风水核心本体"@zh, "Huyanzhao Feng Shui Core Ontology"@en ;
+    rdfs:comment "整合易学时空、地理环境、人文生态、精算生存四大领域的核心上层本体，对齐 BFO 2.0/DUL/SSN-SOSA/GeoSPARQL/PROV-O 标准。"@zh ;
+    dcterms:creator "胡焱照" ;
+    dcterms:created "2025-11-27"^^xsd:date ;
+    owl:versionInfo "0.1.0" ;
+    owl:imports <http://purl.obolibrary.org/obo/bfo/2.0/bfo.owl> ,
+                <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl> ,
+                <http://www.w3.org/ns/sosa/> ,
+                <http://www.opengis.net/ont/geosparql#> ,
+                <http://www.w3.org/ns/prov#> .
+
+# ============================================================
+# 核心实体类层级 (对齐 BFO 2.0)
+# ============================================================
+
+hfsco:FengShuiEntity a owl:Class ;
+    rdfs:label "风水实体"@zh, "Feng Shui Entity"@en ;
+    rdfs:comment "所有人文风水领域实体的根类，对齐 BFO:Entity。所有领域实体均为其子类。"@zh ;
+    rdfs:subClassOf bfo:Entity ;
+    dcterms:source "BFO 2.0 规范" ;
+    prov:wasGeneratedBy <https://github.com/xwszlz/fengshui-platform/tree/main/ontology-builder> .
+
+hfsco:FengShuiProcess a owl:Class ;
+    rdfs:label "风水过程"@zh, "Feng Shui Process"@en ;
+    rdfs:comment "风水领域的过程/活动/事件，对齐 BFO:Process。包括推演、布局、调整、验证等。"@zh ;
+    rdfs:subClassOf bfo:Process ;
+    dcterms:source "BFO 2.0 规范" .
+
+hfsco:FengShuiQuality a owl:Class ;
+    rdfs:label "风水质量"@zh, "Feng Shui Quality"@en ;
+    rdfs:comment "风水实体固有的质量/属性/特征，对齐 BFO:Quality。包括吉凶、旺衰、浓淡、流向等。"@zh ;
+    rdfs:subClassOf bfo:Quality .
+
+hfsco:FengShuiRole a owl:Class ;
+    rdfs:label "风水角色"@zh, "Feng Shui Role"@en ;
+    rdfs:comment "实体在特定风水语境下扮演的角色，对齐 BFO:Role。如：龙脉、穴场、砂、水、朝、案等。"@zh ;
+    rdfs:subClassOf bfo:Role .
+
+hfsco:FengShuiSite a owl:Class ;
+    rdfs:label "风水场所"@zh, "Feng Shui Site"@en ;
+    rdfs:comment "具有风水意义的空间区域，对齐 BFO:Site / GeoSPARQL:Feature。包含地理边界、坐标、拓扑关系。"@zh ;
+    rdfs:subClassOf bfo:Site, geosparql:Feature .
+
+# ============================================================
+# 核心关系属性
+# ============================================================
+
+hfsco:hasPart a owl:ObjectProperty ;
+    rdfs:label "包含部分"@zh, "has part"@en ;
+    rdfs:comment "整体-部分关系，传递性。对齐 BFO:hasPart / DUL:hasPart"@zh ;
+    rdfs:domain hfsco:FengShuiEntity ;
+    rdfs:range hfsco:FengShuiEntity ;
+    owl:transitiveProperty true ;
+    owl:inverseOf hfsco:partOf .
+
+hfsco:partOf a owl:ObjectProperty ;
+    rdfs:label "是...的一部分"@zh, "part of"@en ;
+    rdfs:domain hfsco:FengShuiEntity ;
+    rdfs:range hfsco:FengShuiEntity .
+
+hfsco:hasQuality a owl:ObjectProperty ;
+    rdfs:label "具有质量"@zh, "has quality"@en ;
+    rdfs:comment "实体具有某种风水质量。对齐 BFO:hasQuality"@zh ;
+    rdfs:domain hfsco:FengShuiEntity ;
+    rdfs:range hfsco:FengShuiQuality .
+
+hfsco:hasRole a owl:ObjectProperty ;
+    rdfs:label "具有角色"@zh, "has role"@en ;
+    rdfs:comment "实体在特定语境下扮演某种风水角色。对齐 BFO:hasRole"@zh ;
+    rdfs:domain hfsco:FengShuiEntity ;
+    rdfs:range hfsco:FengShuiRole .
+
+hfsco:locatedIn a owl:ObjectProperty ;
+    rdfs:label "位于"@zh, "located in"@en ;
+    rdfs:comment "实体位于某风水场所。对齐 BFO:locatedIn / GeoSPARQL:sfWithin"@zh ;
+    rdfs:domain hfsco:FengShuiEntity ;
+    rdfs:range hfsco:FengShuiSite .
+
+hfsco:participatesIn a owl:ObjectProperty ;
+    rdfs:label "参与"@zh, "participates in"@en ;
+    rdfs:comment "实体参与某风水过程。对齐 BFO:participatesIn"@zh ;
+    rdfs:domain hfsco:FengShuiEntity ;
+    rdfs:range hfsco:FengShuiProcess .
+
+hfsco:hasFengShuiSignificance a owl:ObjectProperty ;
+    rdfs:label "具有风水意义"@zh, "has feng shui significance"@en ;
+    rdfs:comment "实体/场所/过程具有特定的风水学意义/象义/吉凶判断"@zh ;
+    rdfs:domain hfsco:FengShuiEntity ;
+    rdfs:range hfsco:FengShuiQuality .
+
+# ============================================================
+# 核心数据属性
+# ============================================================
+
+hfsco:hasConfidenceScore a owl:DatatypeProperty ;
+    rdfs:label "置信度分数"@zh, "confidence score"@en ;
+    rdfs:comment "模型预测/专家判断/推理结果的置信度 [0,1]"@zh ;
+    rdfs:domain hfsco:FengShuiEntity ;
+    rdfs:range xsd:decimal .
+
+hfsco:hasAuspiciousnessLevel a owl:DatatypeProperty ;
+    rdfs:label "吉凶等级"@zh, "auspiciousness level"@en ;
+    rdfs:comment "吉凶等级：大吉/吉/平/凶/大凶 或 数值化评分"@zh ;
+    rdfs:domain hfsco:FengShuiEntity ;
+    rdfs:range xsd:string .
+
+hfsco:hasCoordinate a owl:DatatypeProperty ;
+    rdfs:label "坐标"@zh, "coordinate"@en ;
+    rdfs:comment "WGS84 经纬度坐标，格式: 'lon,lat' 或 WKT Point"@zh ;
+    rdfs:domain hfsco:FengShuiSite ;
+    rdfs:range xsd:string .
+
+hfsco:hasElevation a owl:DatatypeProperty ;
+    rdfs:label "海拔"@zh, "elevation"@en ;
+    rdfs:comment "海拔高度 (米)"@zh ;
+    rdfs:domain hfsco:FengShuiSite ;
+    rdfs:range xsd:decimal .
+
+hfsco:hasTimeRange a owl:DatatypeProperty ;
+    rdfs:label "时间范围"@zh, "time range"@en ;
+    rdfs:comment "元运/卦气/流年等时间范围，ISO 8601 格式"@zh ;
+    rdfs:domain hfsco:FengShuiProcess ;
+    rdfs:range xsd:string .
+
+# ============================================================
+# 种子实例 (示例)
+# ============================================================
+
+hfsco:yuan-yun-8 a hfsco:FengShuiProcess ;
+    rdfs:label "八元运"@zh, "Period 8"@en ;
+    rdfs:comment "下元八运 (2004-2023)，艮卦当令，东北方旺"@zh ;
+    hfsco:hasTimeRange "2004-02-04/2024-02-03" ;
+    hfsco:hasQuality hfsco:auspicious-northeast .
+
+hfsco:auspicious-northeast a hfsco:FengShuiQuality ;
+    rdfs:label "东北方吉庆"@zh, "Northeast Auspicious"@en ;
+    rdfs:comment "八运期间东北方为旺方，利山向、利丁财"@zh ;
+    hfsco:hasAuspiciousnessLevel "大吉" .

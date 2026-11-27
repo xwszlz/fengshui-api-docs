@@ -1,0 +1,188 @@
+@prefix hfsco: <http://huyanzhao.org/ontology/hfsco#> .
+@prefix hfsco-yj: <http://huyanzhao.org/ontology/hfsco/yijing#> .
+@prefix hfsco-geo: <http://huyanzhao.org/ontology/hfsco/geography#> .
+@prefix hfsco-eco: <http://huyanzhao.org/ontology/hfsco/ecology#> .
+@prefix hfsco-act: <http://huyanzhao.org/ontology/hfsco/actuarial#> .
+@prefix bfo: <http://purl.obolibrary.org/obo/bfo/2.0#> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssn: <http://www.w3.org/ns/ssn/> .
+@prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+@prefix geo: <http://www.opengis.net/ont/geo#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix shacl: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# 易学时空本体核心模块 (Yijing Spatiotemporal Ontology)
+# 来源：《周易》《葬书》《青囊经》《青囊奥语》《地理千金赋》《地理入门指掌诀》
+# 核心概念：元运/卦气/纳甲/河图洛书/九宫/紫白九宫/玄空飞星/二十四山/三元九运
+# ============================================================
+
+hfsco-yj: a owl:Ontology ;
+    rdfs:label "易学时空本体"@zh, "Yijing Spatiotemporal Ontology"@en ;
+    rdfs:comment "建模易学时空核心概念：元运周期、卦气旺衰、纳甲配属、河图洛书数理、九宫/紫白/飞星排布、二十四山方位、三元九运时空演化。对齐 Time Ontology / GeoSPARQL。"@zh ;
+    dcterms:source "《周易》《葬书》《青囊经》《青囊奥语》《地理千金赋》《地理入门指掌诀》" ;
+    dcterms:creator "胡焱照" ;
+    owl:versionInfo "0.1.0" .
+
+# ============================================================
+# 核心类：易学时空实体
+# ============================================================
+
+hfsco-yj:YuanYun a owl:Class ;
+    rdfs:label "元运"@zh, "Yuan Yun (Great Cycle)"@en ;
+    rdfs:comment "三元九运中的一个元运，时长20年，对应八卦之一。上元(1-3)、中元(4-6)、下元(7-9)，周期180年。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiProcess ;
+    dcterms:source "《周易》《玄空秘诀》" .
+
+hfsco-yj:GuaQi a owl:Class ;
+    rdfs:label "卦气"@zh, "Gua Qi (Trigram Qi)"@en ;
+    rdfs:comment "八卦在时空中的气场分布状态：旺/相/休/囚/死。随元运更替而周期性变化。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiQuality ;
+    dcterms:source "《青囊经》《玄空飞星》" .
+
+hfsco-yj:NaJia a owl:Class ;
+    rdfs:label "纳甲"@zh, "Na Jia (Heavenly Stems & Earthly Branches Mapping)"@en ;
+    rdfs:comment "天干地支与八卦/六十四卦/二十四山的配属体系。核心推演规则。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiProcess ;
+    dcterms:source "《周易》《纳甲筌蹄》" .
+
+hfsco-yj:HeTuLuoShu a owl:Class ;
+    rdfs:label "河图洛书"@zh, "He Tu Luo Shu (River Map & Luo Book)"@en ;
+    rdfs:comment "先天/后天数理基础：河图十数(1-10)、洛书九宫(1-9)。空间布局/时间推演的数学内核。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity ;
+    dcterms:source "《礼记·中庸》《易纂》" .
+
+hfsco-yj:JiuGong a owl:Class ;
+    rdfs:label "九宫"@zh, "Nine Palaces"@en ;
+    rdfs:comment "洛书九宫空间矩阵：坎一/坤二/震三/巽四/中五/乾六/兑七/艮八/离九。紫白飞星/玄空排布基础。"@zh ;
+    rdfs:subClassOf hfsco-yj:HeTuLuoShu ;
+    dcterms:source "《洛书》《九宫易》" .
+
+hfsco-yj:ZiBaiFeiXing a owl:Class ;
+    rdfs:label "紫白飞星"@zh, "Purple White Flying Stars"@en ;
+    rdfs:comment "以洛书九宫为矩阵，按年/月/日/时飞布九星(一白贪狼/二黑巨门/三碧禄存/四绿文曲/五黄廉贞/六白武曲/七赤破军/八白左辅/九紫右弼)。判断时空吉凶核心模型。"@zh ;
+    rdfs:subClassOf hfsco-yj:JiuGong ;
+    dcterms:source "《紫白诀》《玄空飞星秘诀》" .
+
+hfsco-yj:XuanKongFeiXing a owl:Class ;
+    rdfs:label "玄空飞星"@zh, "Xuan Kong Flying Stars"@en ;
+    rdfs:comment "结合元运/卦气/山向/年月日时的动态飞星模型。核心：坐山/向山/来水/去口/零正神判断。"@zh ;
+    rdfs:subClassOf hfsco-yj:ZiBaiFeiXing ;
+    dcterms:source "《玄空秘诀》《青囊奥语》" .
+
+hfsco-yj:ErShiSiShan a owl:Class ;
+    rdfs:label "二十四山"@zh, "Twenty-Four Mountains"@en ;
+    rdfs:comment "罗盘核心方位系统：八卦(8) + 天干(8) + 地支(4) + 替卦/替干(4) = 24山。每山15度。纳甲/飞星/定向/分金核心。"@zh ;
+    rdfs:subClassOf hfsco-yj:NaJia ;
+    dcterms:source "《罗盘诀》《地理指蒙诀》" .
+
+hfsco-yj:SanYuanJiuYun a owl:Class ;
+    rdfs:label "三元九运"@zh, "Three Cycles Nine Periods"@en ;
+    rdfs:comment "180年大周期：上元(一白/二黑/三碧)、中元(四绿/五黄/六白)、下元(七赤/八白/九紫)。每运20年。时空宏观演化框架。"@zh ;
+    rdfs:subClassOf hfsco-yj:YuanYun ;
+    dcterms:source "《三元经》《玄空大成》" .
+
+hfsco-yj:MingTang a owl:Class ;
+    rdfs:label "明堂"@zh, "Ming Tang (Bright Hall)"@en ;
+    rdfs:comment "穴场前方聚气平缓开阔区域。核心指标：宽度/深度/高度差/水口/朝案/照应关系。"@zh ;
+    rdfs:subClassOf hfsco-geo:Landform ;
+    dcterms:source "《青囊经》《地理千金赋》" .
+
+hfsco-yj:ChaoAn a owl:Class ;
+    rdfs:label "朝案"@zh, "Chao An (Facing Mountain)"@en ;
+    rdfs:comment "穴场/明堂正前方层层叠叠朝应之山。核心：层数/高度/距离/形态/连贯性/有无尖煞。"@zh ;
+    rdfs:subClassOf hfsco-geo:Landform ;
+    dcterms:source "《青囊经》《地理千金赋》" .
+
+hfsco-yj:ShuiKou a owl:Class ;
+    rdfs:label "水口"@zh, "Shui Kou (Water Mouth)"@en ;
+    rdfs:comment "水流汇聚流出之口。核心：聚拢/锁钥/朝应/去向/有无冲射/吉凶判断。"@zh ;
+    rdfs:subClassOf hfsco-geo:HydrologyFeature ;
+    dcterms:source "《青囊经》《水口诀》" .
+
+hfsco-yj:LongMai a owl:Class ;
+    rdfs:label "龙脉"@zh, "Long Mai (Dragon Vein)"@en ;
+    rdfs:comment "山脉走向/起伏/气场流动的连贯脉络。核心：来龙/去脉/过峡/发脉/结穿/气场浓淡/阴阳属性。"@zh ;
+    rdfs:subClassOf hfsco-geo:Landform ;
+    dcterms:source "《葬书》《青囊经》《地理千金赋》" .
+
+hfsco-yj:XueChang a owl:Class ;
+    rdfs:label "穴场"@zh, "Xue Chang (Acupoint Field)"@en ;
+    rdfs:comment "龙脉气场聚结之处，可安葬/建宅/立向。核心：穴心/明堂/砂/水/向/水口/吉凶/等级。"@zh ;
+    rdfs:subClassOf hfsco-geo:Landform ;
+    dcterms:source "《葬书》《青囊经》《地理千金赋》" .
+
+# ============================================================
+# 核心关系 (易学时空特有)
+# ============================================================
+
+hfsco-yj:hasGuaQi a owl:ObjectProperty ;
+    rdfs:label "具有卦气"@zh, "has gua qi"@en ;
+    rdfs:domain hfsco-yj:YuanYun ;
+    rdfs:range hfsco-yj:GuaQi ;
+    rdfs:comment "元运具有特定的卦气分布"@zh .
+
+hfsco-yj:fliesTo a owl:ObjectProperty ;
+    rdfs:label "飞至"@zh, "flies to"@en ;
+    rdfs:domain hfsco-yj:ZiBaiFeiXing ;
+    rdfs:range hfsco-yj:JiuGong ;
+    rdfs:comment "飞星按顺飞/逆飞规则飞布至九宫某宫位"@zh .
+
+hfsco-yj:faces a owl:ObjectProperty ;
+    rdfs:label "坐向"@zh, "faces"@en ;
+    rdfs:domain hfsco-yj:XueChang ;
+    rdfs:range hfsco-yj:ErShiSiShan ;
+    rdfs:comment "穴场/建筑的坐山向向关系"@zh .
+
+hfsco-yj:hasShuiKou a owl:ObjectProperty ;
+    rdfs:label "具有水口"@zh, "has water mouth"@en ;
+    rdfs:domain hfsco-yj:XueChang ;
+    rdfs:range hfsco-yj:ShuiKou .
+
+hfsco-yj:hasChaoAn a owl:ObjectProperty ;
+    rdfs:label "具有朝案"@zh, "has facing mountain"@en ;
+    rdfs:domain hfsco-yj:XueChang ;
+    rdfs:range hfsco-yj:ChaoAn .
+
+hfsco-yj:hasMingTang a owl:ObjectProperty ;
+    rdfs:label "具有明堂"@zh, "has bright hall"@en ;
+    rdfs:domain hfsco-yj:XueChang ;
+    rdfs:range hfsco-yj:MingTang .
+
+hfsco-yj:originatesFrom a owl:ObjectProperty ;
+    rdfs:label "发源于"@zh, "originates from"@en ;
+    rdfs:domain hfsco-yj:LongMai ;
+    rdfs:range hfsco-yj:LongMai ;
+    rdfs:comment "龙脉源头追溯关系"@zh .
+
+# ============================================================
+# 种子实例
+# ============================================================
+
+hfsco-yj:yuan-yun-8 a hfsco-yj:YuanYun ;
+    rdfs:label "下元八运"@zh, "Period 8 (Lower Cycle)"@en ;
+    rdfs:comment "2004-2023，艮卦当令，东北方旺，五黄中宫"@zh ;
+    hfsco-yj:hasGuaQi hfsco-yj:gen-gua-qi .
+
+hfsco-yj:gen-gua-qi a hfsco-yj:GuaQi ;
+    rdfs:label "艮卦气"@zh, "Gen Gua Qi"@en ;
+    rdfs:comment "艮卦主东北，属土，主少男，主门户、阀门、脾胃、皮肤"@zh .
+
+hfsco-yj:shan-gen-xiang-kun a hfsco-yj:ErShiSiShan ;
+    rdfs:label "艮山坤向"@zh, "Gen Mountain Kun Facing"@en ;
+    rdfs:comment "坐东北向西南，八运旺山旺向组合"@zh .
+
+hfsco-yj:xue-chang-case-001 a hfsco-yj:XueChang ;
+    rdfs:label "龙川村穴场"@zh, "Longchuan Village Acupoint"@en ;
+    rdfs:comment "绩溪龙川村主穴，坐艮向坤，明堂开阔，水口锁钥，朝案层层"@zh ;
+    hfsco-yj:faces hfsco-yj:shan-gen-xiang-kun ;
+    hfsco-yj:hasMingTang hfsco-yj:ming-tang-001 ;
+    hfsco-yj:hasShuiKou hfsco-yj:shui-kou-001 ;
+    hfsco-yj:hasChaoAn hfsco-yj:chao-an-001 .

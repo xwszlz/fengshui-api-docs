@@ -1,0 +1,209 @@
+@prefix hfsco: <http://huyanzhao.org/ontology/hfsco#> .
+@prefix hfsco-geo: <http://huyanzhao.org/ontology/hfsco/geography#> .
+@prefix hfsco-yj: <http://huyanzhao.org/ontology/hfsco/yijing#> .
+@prefix hfsco-eco: <http://huyanzhao.org/ontology/hfsco/ecology#> .
+@prefix hfsco-act: <http://huyanzhao.org/ontology/hfsco/actuarial#> .
+@prefix bfo: <http://purl.obolibrary.org/obo/bfo/2.0#> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssn: <http://www.w3.org/ns/ssn/> .
+@prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+@prefix geo: <http://www.opengis.net/ont/geo#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix shacl: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# 地理环境本体核心模块 (Geographic Environment Ontology)
+# 来源：《青囊经》《地理千金赋》《青囊奥语》《地理入门指掌诀》《罗盘诀》
+# 核心概念：地形单元/水文要素/气场/微气候/植被/土壤/人文景观/空间拓扑
+# 对齐 GeoSPARQL / SSN-SOSA / O&M / OM / QUDT
+# ============================================================
+
+hfsco-geo: a owl:Ontology ;
+    rdfs:label "地理环境本体"@zh, "Geographic Environment Ontology"@en ;
+    rdfs:comment "建模风水地理环境核心要素：地形单元(山/水/平/谷/峡/口)、水文要素(江/河/湖/泉/口/流向/水质)、气场/微气候(风/光/热/湿/负氧离子/能量场)、植被/土壤/人文景观、空间拓扑关系。对齐 GeoSPARQL/SSN-SOSA/OM/QUDT。"@zh ;
+    dcterms:source "《青囊经》《地理千金赋》《青囊奥语》《地理入门指掌诀》《罗盘诀》" ;
+    dcterms:creator "胡焱照" ;
+    owl:versionInfo "0.1.0" .
+
+# ============================================================
+# 核心类：地理环境实体
+# ============================================================
+
+hfsco-geo:Landform a owl:Class ;
+    rdfs:label "地形单元"@zh, "Landform Unit"@en ;
+    rdfs:comment "地表形态基本单元：山/岭/峰/峦/峡/谷/盆/平/坡/崖/石/洞/台/原/滩/洲/岛/礁/滩等。核心属性：高程/坡度/坡向/起伏度/切割度/形态指数。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity, geosparql:Feature ;
+    dcterms:source "《地理入门指掌诀》《地貌学》" .
+
+hfsco-geo:Mountain a owl:Class ;
+    rdfs:label "山体"@zh, "Mountain"@en ;
+    rdfs:comment "海拔相对高差>200m 的地形隆起。核心：主峰/支脉/山脊/山谷/山口/垭口/山麓/山腰/山腹/山顶。"@zh ;
+    rdfs:subClassOf hfsco-geo:Landform .
+
+hfsco-geo:Hill a owl:Class ;
+    rdfs:label "丘陵/小山"@zh, "Hill"@en ;
+    rdfs:comment "海拔相对高差 50-200m 的地形隆起。"@zh ;
+    rdfs:subClassOf hfsco-geo:Landform .
+
+hfsco-geo:Plain a owl:Class ;
+    rdfs:label "平原/平地"@zh, "Plain"@en ;
+    rdfs:comment "地表平坦、起伏微小的区域。"@zh ;
+    rdfs:subClassOf hfsco-geo:Landform .
+
+hfsco-geo:Valley a owl:Class ;
+    rdfs:label "山谷/沟谷"@zh, "Valley"@en ;
+    rdfs:comment "两山/岭之间狭长低洼地带，常有水流通过。核心：谷口/谷底/谷肩/谷坡/水系/宽深比。"@zh ;
+    rdfs:subClassOf hfsco-geo:Landform .
+
+hfsco-geo:Gorge a owl:Class ;
+    rdfs:label "峡谷/峡口"@zh, "Gorge"@en ;
+    rdfs:comment "两岸陡峭、河流深切的狭长峡谷。风水称'过峡'、'峡口'、'关口'。核心：宽度/深度/水流/险要度。"@zh ;
+    rdfs:subClassOf hfsco-geo:Valley .
+
+hfsco-geo:Pass a owl:Class ;
+    rdfs:label "山口/垭口/关口"@zh, "Mountain Pass"@en ;
+    rdfs:comment "山脉中供通行的低洼缺口。风水称'气口'、'过峡'、'关口'、'锁口'。核心：宽度/高度/气场通行度/锁钥作用。"@zh ;
+    rdfs:subClassOf hfsco-geo:Landform .
+
+hfsco-geo:HydrologyFeature a owl:Class ;
+    rdfs:label "水文要素"@zh, "Hydrological Feature"@en ;
+    rdfs:comment "地表水/地下水要素：江/河/湖/泉/溪/涧/沟/渠/塘/堰/坝/口/流/汇/源/口/流向/水质/水量/水温/水色/水味。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity, geosparql:Feature ;
+    dcterms:source "《水口诀》《地理千金赋》" .
+
+hfsco-geo:River a owl:Class ;
+    rdfs:label "河流/江河"@zh, "River"@en ;
+    rdfs:comment "天然水流，有固定河床、常年/季节性流动。核心：干流/支流/一级/二级/源头/河口/流域/水系/流向/流速/水深/宽度/河床/河岸/滩地/岛屿/分叉/汇合。"@zh ;
+    rdfs:subClassOf hfsco-geo:HydrologyFeature .
+
+hfsco-geo:Lake a owl:Class ;
+    rdfs:label "湖泊/水库"@zh, "Lake"@en ;
+    rdfs:comment "陆地凹陷积水形成的水体。风水称'汇水'、'聚水'、'明堂水'、'零堂水'。"@zh ;
+    rdfs:subClassOf hfsco-geo:HydrologyFeature .
+
+hfsco-geo:Spring a owl:Class ;
+    rdfs:label "泉眼/水源"@zh, "Spring"@en ;
+    rdfs:comment "地下水自然涌出地表。风水称'生气口'、'财库口'、'龙眼'。核心：水量/水温/水质/常年/季节性/方位。"@zh ;
+    rdfs:subClassOf hfsco-geo:HydrologyFeature .
+
+hfsco-geo:WaterMouth a owl:Class ;
+    rdfs:label "水口/出口"@zh, "Water Mouth / Outlet"@en ;
+    rdfs:comment "水流汇聚流出区域之口。风水核心：聚拢/锁钥/朝应/去向/有无冲射/吉凶/锁钥作用/拦砂/拦水。对应易学 hfsco-yj:ShuiKou。"@zh ;
+    rdfs:subClassOf hfsco-geo:HydrologyFeature, hfsco-yj:ShuiKou ;
+    dcterms:source "《水口诀》《青囊经》" .
+
+hfsco-geo:QiField a owl:Class ;
+    rdfs:label "气场/能量场"@zh, "Qi Field / Energy Field"@en ;
+    rdfs:comment "地理空间中不可见的能量场分布：龙气/穴气/明堂气/砂气/水气/煞气/生气/死气/旺气/衰气。可通过微气候/负氧离子/地磁/地电/辐射/植被/动物行为间接测量。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiQuality ;
+    dcterms:source "《葬书》《青囊经》《地气篇》" .
+
+hfsco-geo:Microclimate a owl:Class ;
+    rdfs:label "微气候"@zh, "Microclimate"@en ;
+    rdfs:comment "局地尺度气候特征：温度/湿度/风速/风向/日照/辐射/降水/雾露/负氧离子/臭氧/挥发性有机物。风水'气场'的现代物理表征。对齐 SSN-SOSA/O&M/QUDT。"@zh ;
+    rdfs:subClassOf hfsco-geo:QiField ;
+    dcterms:source "《地气篇》《微气候学》" .
+
+hfsco-geo:Vegetation a owl:Class ;
+    rdfs:label "植被/林木"@zh, "Vegetation"@en ;
+    rdfs:comment "植物群落：乔木/灌木/草本/苔藓/林分/林龄/树种/胸径/高度/冠幅/郁闭度/物种丰富度/古树名木/风水林/护村林/护岸林/护路林。风水'砂'的生物表征。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity .
+
+hfsco-geo:FengShuiForest a owl:Class ;
+    rdfs:label "风水林/护村林"@zh, "Feng Shui Forest"@en ;
+    rdfs:comment "为风水目的人工/自然保护的林木带：护村/护岸/护路/护田/护宅/护坟/隔煞/聚气/导气/调节微气候/生物多样性/文化传承。"@zh ;
+    rdfs:subClassOf hfsco-geo:Vegetation ;
+    dcterms:source "《风水林研究》《传统聚落生态学》" .
+
+hfsco-geo:Soil a owl:Class ;
+    rdfs:label "土壤/地质"@zh, "Soil / Geology"@en ;
+    rdfs:comment "土壤剖面/质地/酸碱度/有机质/矿物组成/地质构造/岩性/断层/褶皱/节理/裂隙/渗透性/承载力/地基稳定性。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity .
+
+hfsco-geo:HumanLandscape a owl:Class ;
+    rdfs:label "人文景观/建筑"@zh, "Human Landscape / Building"@en ;
+    rdfs:comment "人类活动形成的空间实体：村落/宅院/祠堂/塔/桥/路/井/田/园/庙/观/碑/碣/牌坊/牌楼/界石/界碑/界沟/界河/界渠/界道/界墙/界树/界石/界碑。"@zh ;
+    rdfs:subClassOf hfsco:FengShuiEntity, geosparql:Feature .
+
+hfsco-geo:Village a owl:Class ;
+    rdfs:label "传统聚落/村落"@zh, "Traditional Village"@en ;
+    rdfs:comment "自然/人工选址、依山傍水、风水布局、族群聚居、宗法组织、公共空间(祠堂/戏台/古树/古井/古道/古桥/古塔/古井/古碑/古道)、风水林/水系/产业/文化/记忆。"@zh ;
+    rdfs:subClassOf hfsco-geo:HumanLandscape, hfsco-eco:Settlement ;
+    dcterms:source "《传统聚落风水格局识别》《中国传统村落保护》" .
+
+hfsco-geo:Building a owl:Class ;
+    rdfs:label "建筑/宅院/楼宇"@zh, "Building"@en ;
+    rdfs:comment "居住/祭祀/办公/商业/工业/农业/军事/纪念/景观等功能建筑。核心：坐向/布局/结构/材料/装饰/风水布局/吉凶/等级。"@zh ;
+    rdfs:subClassOf hfsco-geo:HumanLandscape .
+
+hfsco-geo:Tower a owl:Class ;
+    rdfs:label "塔/文笔塔/镇山塔/风水塔"@zh, "Tower / Feng Shui Tower"@en ;
+    rdfs:comment "为风水目的建造的塔：文笔/镇山/镇煞/补缺/旺文/旺武/旺财/旺丁/化煞/锁水/锁气/标志/景观。核心：高度/层数/形制/位置/坐向/功能/吉凶。"@zh ;
+    rdfs:subClassOf hfsco-geo:Building ;
+    dcterms:source "《文笔塔研究》《风水塔志》" .
+
+# ============================================================
+# 核心关系 (地理环境特有)
+# ============================================================
+
+hfsco-geo:flowsInto a owl:ObjectProperty ;
+    rdfs:label "汇入"@zh, "flows into"@en ;
+    rdfs:domain hfsco-geo:HydrologyFeature ;
+    rdfs:range hfsco-geo:HydrologyFeature ;
+    rdfs:comment "水文要素汇入关系 (支流→干流、河流→湖泊、地表→地下)"@zh .
+
+hfsco-geo:surrounds a owl:ObjectProperty ;
+    rdfs:label "环绕/环抱"@zh, "surrounds"@en ;
+    rdfs:domain hfsco-geo:Landform ;
+    rdfs:range hfsco-geo:Landform ;
+    rdfs:comment "地形单元环绕关系 (山环水抱/砂环水抱/明堂环抱)"@zh .
+
+hfsco-geo:facesTowards a owl:ObjectProperty ;
+    rdfs:label "朝向/面向"@zh, "faces towards"@en ;
+    rdfs:domain hfsco-geo:Landform ;
+    rdfs:range hfsco-geo:Landform ;
+    rdfs:comment "地形单元朝向关系 (朝山/朝水/朝案/朝明堂/背山面水)"@zh .
+
+hfsco-geo:protects a owl:ObjectProperty ;
+    rdfs:label "庇护/庇佑"@zh, "protects"@en ;
+    rdfs:domain hfsco-geo:FengShuiForest ;
+    rdfs:range hfsco-geo:HumanLandscape ;
+    rdfs:comment "风水林庇护聚落/建筑/农田/水源/道路关系"@zh .
+
+hfsco-geo:regulatesMicroclimate a owl:ObjectProperty ;
+    rdfs:label "调节微气候"@zh, "regulates microclimate"@en ;
+    rdfs:domain hfsco-geo:FengShuiForest ;
+    rdfs:range hfsco-geo:Microclimate ;
+    rdfs:comment "风水林调节微气候关系 (温度/湿度/风速/负氧离子/PM2.5)"@zh .
+
+# ============================================================
+# 种子实例
+# ============================================================
+
+hfsco-geo:longchuan-village a hfsco-geo:Village ;
+    rdfs:label "龙川村"@zh, "Longchuan Village"@en ;
+    rdfs:comment "安徽绩溪龙川村，胡宗宪故里，国家5A级景区，传统聚落风水格局典范"@zh ;
+    hfsco:hasCoordinate "118.15,29.85" ;
+    hfsco:hasElevation "120" ;
+    hfsco:hasQuality hfsco-geo:qi-field-longchuan .
+
+hfsco-geo:qi-field-longchuan a hfsco-geo:QiField ;
+    rdfs:label "龙川村气场"@zh, "Longchuan Qi Field"@en ;
+    rdfs:comment "龙川村整体气场：龙脉朝应、明堂开阔、水口锁钥、风水林完好、微气候舒适、负氧离子高"@zh .
+
+hfsco-geo:fengshui-forest-longchuan a hfsco-geo:FengShuiForest ;
+    rdfs:label "龙川风水林"@zh, "Longchuan Feng Shui Forest"@en ;
+    rdfs:comment "龙川村护村风水林，面积约200亩，树龄百年以上，物种丰富，庇护村落、调节微气候、生物多样性丰富"@zh ;
+    hfsco-geo:protects hfsco-geo:longchuan-village ;
+    hfsco-geo:regulatesMicroclimate hfsco-geo:microclimate-longchuan .
+
+hfsco-geo:microclimate-longchuan a hfsco-geo:Microclimate ;
+    rdfs:label "龙川微气候"@zh, "Longchuan Microclimate"@en ;
+    rdfs:comment "年均温16℃，负氧离子>3000个/cm³，PM2.5<15μg/m³，相对湿度70%，舒适度优"@zh .

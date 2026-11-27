@@ -1,0 +1,512 @@
+@prefix hfsco: <http://huyanzhao.org/ontology/hfsco#> .
+@prefix hfsco-yj: <http://huyanzhao.org/ontology/hfsco/yijing#> .
+@prefix hfsco-geo: <http://huyanzhao.org/ontology/hfsco/geography#> .
+@prefix hfsco-eco: <http://huyanzhao.org/ontology/hfsco/ecology#> .
+@prefix hfsco-act: <http://huyanzhao.org/ontology/hfsco/actuarial#> .
+@prefix bfo: <http://purl.obolibrary.org/obo/bfo/2.0#> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssn: <http://www.w3.org/ns/sosa/> .
+@prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+@prefix geo: <http://www.opengis.net/ont/geo#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix shacl: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# 核心本体 SHACL 约束形状 (Core SHACL Shapes)
+# 验证所有领域本体必须满足的基础约束
+# ============================================================
+
+# ============================================================
+# 1. 命名规范约束
+# ============================================================
+
+hfsco:ClassNamingConvention a shacl:NodeShape ;
+    rdfs:label "类命名规范约束"@zh, "Class Naming Convention Constraint"@en ;
+    shacl:targetClass owl:Class ;
+    shacl:property [
+        shacl:path rdfs:label ;
+        shacl:minCount 1 ;
+        shacl:message "每个类必须至少有一个 rdfs:label"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:comment ;
+        shacl:minCount 1 ;
+        shacl:message "每个类必须至少有一个 rdfs:comment (定义/来源/约束/示例)"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path dcterms:source ;
+        shacl:minCount 1 ;
+        shacl:message "每个类必须标注来源 dcterms:source"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path prov:wasGeneratedBy ;
+        shacl:minCount 1 ;
+        shacl:message "每个类必须标注生成活动 prov:wasGeneratedBy"@zh ;
+    ] .
+
+hfsco:ObjectPropertyNamingConvention a shacl:NodeShape ;
+    rdfs:label "对象属性命名规范约束"@zh, "Object Property Naming Convention Constraint"@en ;
+    shacl:targetClass owl:ObjectProperty ;
+    shacl:property [
+        shacl:path rdfs:label ;
+        shacl:minCount 1 ;
+        shacl:message "每个对象属性必须至少有一个 rdfs:label"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:comment ;
+        shacl:minCount 1 ;
+        shacl:message "每个对象属性必须至少有一个 rdfs:comment"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:domain ;
+        shacl:minCount 1 ;
+        shacl:message "每个对象属性必须声明 rdfs:domain"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:range ;
+        shacl:minCount 1 ;
+        shacl:message "每个对象属性必须声明 rdfs:range"@zh ;
+    ] .
+
+hfsco:DatatypePropertyNamingConvention a shacl:NodeShape ;
+    rdfs:label "数据属性命名规范约束"@zh, "Datatype Property Naming Convention Constraint"@en ;
+    shacl:targetClass owl:DatatypeProperty ;
+    shacl:property [
+        shacl:path rdfs:label ;
+        shacl:minCount 1 ;
+        shacl:message "每个数据属性必须至少有一个 rdfs:label"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:comment ;
+        shacl:minCount 1 ;
+        shacl:message "每个数据属性必须至少有一个 rdfs:comment"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:domain ;
+        shacl:minCount 1 ;
+        shacl:message "每个数据属性必须声明 rdfs:domain"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:range ;
+        shacl:minCount 1 ;
+        shacl:message "每个数据属性必须声明 rdfs:range (xsd 类型)"@zh ;
+    ] .
+
+# ============================================================
+# 2. 命名空间合规约束
+# ============================================================
+
+hfsco:NamespaceCompliance a shacl:NodeShape ;
+    rdfs:label "命名空间合规约束"@zh, "Namespace Compliance Constraint"@en ;
+    shacl:targetClass owl:Class ;
+    shacl:targetClass owl:ObjectProperty ;
+    shacl:targetClass owl:DatatypeProperty ;
+    shacl:targetClass owl:NamedIndividual ;
+    shacl:sparql [
+        shacl:message "URI 必须使用允许的命名空间前缀 (hfsco, hfsco-yj, hfsco-geo, hfsco-eco, hfsco-act, hfsco-ext, bfo, dul, sosa, ssn, geosparql, geo, prov, skos, schema, xsd, rdf, rdfs, owl, dcterms, prov, foaf, vcard, time, wgs84, chebi, go, om, qudt)"@zh ;
+        shacl:select """
+            PREFIX hfsco: <http://huyanzhao.org/ontology/hfsco#>
+            PREFIX hfsco-yj: <http://huyanzhao.org/ontology/hfsco/yijing#>
+            PREFIX hfsco-geo: <http://huyanzhao.org/ontology/hfsco/geography#>
+            PREFIX hfsco-eco: <http://huyanzhao.org/ontology/hfsco/ecology#>
+            PREFIX hfsco-act: <http://huyanzhao.org/ontology/hfsco/actuarial#>
+            PREFIX hfsco-ext: <http://huyanzhao.org/ontology/hfsco/extension#>
+            PREFIX bfo: <http://purl.obolibrary.org/obo/bfo/2.0#>
+            PREFIX dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>
+            PREFIX sosa: <http://www.w3.org/ns/sosa/>
+            PREFIX ssn: <http://www.w3.org/ns/ssn/>
+            PREFIX geosparql: <http://www.opengis.net/ont/geosparql#>
+            PREFIX geo: <http://www.opengis.net/ont/geo#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            PREFIX schema: <http://schema.org/>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+            PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
+            PREFIX time: <http://www.w3.org/2006/time#>
+            PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+            PREFIX chebi: <http://purl.obolibrary.org/obo/chebi#>
+            PREFIX go: <http://purl.obolibrary.org/obo/go#>
+            PREFIX om: <http://www.ontology-of-units-of-measure.org/resource/om-2/>
+            PREFIX qudt: <http://qudt.org/schema/qudt/>
+            
+            SELECT $this WHERE {
+                $this a ?type .
+                FILTER (?type IN (owl:Class, owl:ObjectProperty, owl:DatatypeProperty, owl:NamedIndividual))
+                FILTER (!STRSTARTS(STR($this), "http://huyanzhao.org/ontology/hfsco"))
+                FILTER (!STRSTARTS(STR($this), "http://purl.obolibrary.org/obo/"))
+                FILTER (!STRSTARTS(STR($this), "http://www.ontologydesignpatterns.org/ont/dul/"))
+                FILTER (!STRSTARTS(STR($this), "http://www.w3.org/ns/"))
+                FILTER (!STRSTARTS(STR($this), "http://www.opengis.net/ont/"))
+                FILTER (!STRSTARTS(STR($this), "http://www.w3.org/2004/02/skos/core#"))
+                FILTER (!STRSTARTS(STR($this), "http://schema.org/"))
+                FILTER (!STRSTARTS(STR($this), "http://www.w3.org/2001/XMLSchema#"))
+                FILTER (!STRSTARTS(STR($this), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+                FILTER (!STRSTARTS(STR($this), "http://www.w3.org/2000/01/rdf-schema#"))
+                FILTER (!STRSTARTS(STR($this), "http://www.w3.org/2002/07/owl#"))
+                FILTER (!STRSTARTS(STR($this), "http://purl.org/dc/terms/"))
+                FILTER (!STRSTARTS(STR($this), "http://xmlns.com/foaf/0.1/"))
+                FILTER (!STRSTARTS(STR($this), "http://www.w3.org/2006/vcard/ns#"))
+                FILTER (!STRSTARTS(STR($this), "http://www.w3.org/2006/time#"))
+                FILTER (!STRSTARTS(STR($this), "http://www.w3.org/2003/01/geo/wgs84_pos#"))
+                FILTER (!STRSTARTS(STR($this), "http://purl.obolibrary.org/obo/chebi#"))
+                FILTER (!STRSTARTS(STR($this), "http://purl.obolibrary.org/obo/go#"))
+                FILTER (!STRSTARTS(STR($this), "http://www.ontology-of-units-of-measure.org/resource/om-2/"))
+                FILTER (!STRSTARTS(STR($this), "http://qudt.org/schema/qudt/"))
+            }
+        """ ;
+    ] .
+
+# ============================================================
+# 3. 必需标注完整性约束
+# ============================================================
+
+hfsco:RequiredAnnotations a shacl:NodeShape ;
+    rdfs:label "必需标注完整性约束"@zh, "Required Annotations Completeness Constraint"@en ;
+    shacl:targetClass owl:Class ;
+    shacl:targetClass owl:ObjectProperty ;
+    shacl:targetClass owl:DatatypeProperty ;
+    shacl:property [
+        shacl:path rdfs:label ;
+        shacl:minCount 2 ;  # 中英文双语
+        shacl:message "每个元素必须至少有中英文双语 rdfs:label (使用 @zh @en 语言标签)"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:comment ;
+        shacl:minCount 1 ;
+        shacl:message "必须有 rdfs:comment (定义来源/定义文本/约束条件/典型示例)"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path dcterms:source ;
+        shacl:minCount 1 ;
+        shacl:message "必须标注来源 dcterms:source (文献 DOI/标准号/专家姓名/数据集 ID)"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path prov:wasGeneratedBy ;
+        shacl:minCount 1 ;
+        shacl:message "必须标注生成活动 prov:wasGeneratedBy (脚本版本/会议纪要/专家评审记录)"@zh ;
+    ] .
+
+# ============================================================
+# 4. 核心实体层级约束 (对齐 BFO)
+# ============================================================
+
+hfsco:EntityHierarchyAlignment a shacl:NodeShape ;
+    rdfs:label "实体层级对齐 BFO 约束"@zh, "Entity Hierarchy BFO Alignment Constraint"@en ;
+    shacl:targetClass hfsco:FengShuiEntity ;
+    shacl:property [
+        shacl:path rdfs:subClassOf ;
+        shacl:hasValue bfo:Entity ;
+        shacl:message "所有风水实体必须直接或间接是 bfo:Entity 的子类"@zh ;
+    ] .
+
+hfsco:ProcessHierarchyAlignment a shacl:NodeShape ;
+    rdfs:label "过程层级对齐 BFO 约束"@zh, "Process Hierarchy BFO Alignment Constraint"@en ;
+    shacl:targetClass hfsco:FengShuiProcess ;
+    shacl:property [
+        shacl:path rdfs:subClassOf ;
+        shacl:hasValue bfo:Process ;
+        shacl:message "所有风水过程必须直接或间接是 bfo:Process 的子类"@zh ;
+    ] .
+
+hfsco:QualityHierarchyAlignment a shacl:NodeShape ;
+    rdfs:label "质量层级对齐 BFO 约束"@zh, "Quality Hierarchy BFO Alignment Constraint"@en ;
+    shacl:targetClass hfsco:FengShuiQuality ;
+    shacl:property [
+        shacl:path rdfs:subClassOf ;
+        shacl:hasValue bfo:Quality ;
+        shacl:message "所有风水质量必须直接或间接是 bfo:Quality 的子类"@zh ;
+    ] .
+
+hfsco:RoleHierarchyAlignment a shacl:NodeShape ;
+    rdfs:label "角色层级对齐 BFO 约束"@zh, "Role Hierarchy BFO Alignment Constraint"@en ;
+    shacl:targetClass hfsco:FengShuiRole ;
+    shacl:property [
+        shacl:path rdfs:subClassOf ;
+        shacl:hasValue bfo:Role ;
+        shacl:message "所有风水角色必须直接或间接是 bfo:Role 的子类"@zh ;
+    ] .
+
+hfsco:SiteHierarchyAlignment a shacl:NodeShape ;
+    rdfs:label "场所层级对齐 BFO/GeoSPARQL 约束"@zh, "Site Hierarchy BFO GeoSPARQL Alignment Constraint"@en ;
+    shacl:targetClass hfsco:FengShuiSite ;
+    shacl:property [
+        shacl:path rdfs:subClassOf ;
+        shacl:hasValue bfo:Site ;
+        shacl:message "所有风水场所必须直接或间接是 bfo:Site 的子类"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:subClassOf ;
+        shacl:hasValue geosparql:Feature ;
+        shacl:message "所有风水场所必须直接或间接是 geosparql:Feature 的子类"@zh ;
+    ] .
+
+# ============================================================
+# 5. 核心关系域/范围约束
+# ============================================================
+
+hfsco:HasPartDomainRange a shacl:NodeShape ;
+    rdfs:label "hasPart 域范围约束"@zh, "hasPart Domain Range Constraint"@en ;
+    shacl:targetClass hfsco:hasPart ;
+    shacl:property [
+        shacl:path rdfs:domain ;
+        shacl:hasValue hfsco:FengShuiEntity ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:range ;
+        shacl:hasValue hfsco:FengShuiEntity ;
+    ] .
+
+hfsco:HasQualityDomainRange a shacl:NodeShape ;
+    rdfs:label "hasQuality 域范围约束"@zh, "hasQuality Domain Range Constraint"@en ;
+    shacl:targetClass hfsco:hasQuality ;
+    shacl:property [
+        shacl:path rdfs:domain ;
+        shacl:hasValue hfsco:FengShuiEntity ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:range ;
+        shacl:hasValue hfsco:FengShuiQuality ;
+    ] .
+
+hfsco:LocatedInDomainRange a shacl:NodeShape ;
+    rdfs:label "locatedIn 域范围约束"@zh, "locatedIn Domain Range Constraint"@en ;
+    shacl:targetClass hfsco:locatedIn ;
+    shacl:property [
+        shacl:path rdfs:domain ;
+        shacl:hasValue hfsco:FengShuiEntity ;
+    ] ;
+    shacl:property [
+        shacl:path rdfs:range ;
+        shacl:hasValue hfsco:FengShuiSite ;
+    ] .
+
+# ============================================================
+# 6. 关键数据属性值约束
+# ============================================================
+
+hfsco:ConfidenceScoreRange a shacl:NodeShape ;
+    rdfs:label "置信度分数范围约束 [0,1]"@zh, "Confidence Score Range Constraint"@en ;
+    shacl:targetClass hfsco:hasConfidenceScore ;
+    shacl:property [
+        shacl:path rdfs:range ;
+        shacl:hasValue xsd:decimal ;
+    ] ;
+    shacl:sparql [
+        shacl:message "置信度分数必须在 [0,1] 范围内"@zh ;
+        shacl:select """
+            PREFIX hfsco: <http://huyanzhao.org/ontology/hfsco#>
+            SELECT $this ?value WHERE {
+                $this hfsco:hasConfidenceScore ?value .
+                FILTER (?value < 0 || ?value > 1)
+            }
+        """ ;
+    ] .
+
+hfsco:CoordinateFormat a shacl:NodeShape ;
+    rdfs:label "坐标格式约束"@zh, "Coordinate Format Constraint"@en ;
+    shacl:targetClass hfsco:hasCoordinate ;
+    shacl:sparql [
+        shacl:message "坐标必须符合 'lon,lat' 或 WKT Point 格式"@zh ;
+        shacl:select """
+            PREFIX hfsco: <http://huyanzhao.org/ontology/hfsco#>
+            SELECT $this ?coord WHERE {
+                $this hfsco:hasCoordinate ?coord .
+                FILTER (!REGEX(?coord, "^-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?$") && !REGEX(?coord, "^POINT\\s*\\(-?\\d+(\\.\\d+)?\\s+-?\\d+(\\.\\d+)?\\)$"))
+            }
+        """ ;
+    ] .
+
+# ============================================================
+# 7. 易学时空特有约束
+# ============================================================
+
+hfsco-yj:YuanYunGuaQiConstraint a shacl:NodeShape ;
+    rdfs:label "元运-卦气关联约束"@zh, "YuanYun-GuaQi Association Constraint"@en ;
+    shacl:targetClass hfsco-yj:YuanYun ;
+    shacl:property [
+        shacl:path hfsco-yj:hasGuaQi ;
+        shacl:minCount 1 ;
+        shacl:message "每个元运必须关联至少一个卦气 (hfsco-yj:hasGuaQi)"@zh ;
+    ] .
+
+hfsco-yj:XueChangCompleteness a shacl:NodeShape ;
+    rdfs:label "穴场要素完整性约束"@zh, "XueChang Completeness Constraint"@en ;
+    shacl:targetClass hfsco-yj:XueChang ;
+    shacl:property [
+        shacl:path hfsco-yj:faces ;
+        shacl:minCount 1 ;
+        shacl:message "穴场必须有坐向 (hfsco-yj:faces)"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path hfsco-yj:hasMingTang ;
+        shacl:minCount 1 ;
+        shacl:message "穴场必须有明堂 (hfsco-yj:hasMingTang)"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path hfsco-yj:hasShuiKou ;
+        shacl:minCount 1 ;
+        shacl:message "穴场必须有水口 (hfsco-yj:hasShuiKou)"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path hfsco-yj:hasChaoAn ;
+        shacl:minCount 1 ;
+        shacl:message "穴场必须有朝案 (hfsco-yj:hasChaoAn)"@zh ;
+    ] ;
+    shacl:property [
+        shacl:path hfsco-yj:hasMingTang ;
+        shacl:minCount 1 ;
+        shacl:message "穴场必须有明堂 (hfsco-yj:hasMingTang)"@zh ;
+    ] .
+
+# ============================================================
+# 8. 精算生存特有约束
+# ============================================================
+
+hfsco-act:Level1ACompliance a shacl:NodeShape ;
+    rdfs:label "Level 1A 假设合规约束"@zh, "Level 1A Assumption Compliance Constraint"@en ;
+    shacl:targetClass hfsco-act:Level1AAssumption ;
+    shacl:property [
+        shacl:path hfsco-act:validatesAgainst ;
+        shacl:minCount 1 ;
+        shacl:message "Level 1A 假设必须关联精算备忘录 (hfsco-act:validatesAgainst)"@zh ;
+    ] .
+
+hfsco-act:CIndexThreshold a shacl:NodeShape ;
+    rdfs:label "C-index 阈值约束 ≥ 0.85"@zh, "C-index Threshold Constraint ≥ 0.85"@en ;
+    shacl:targetClass hfsco-act:SurvivalModel ;
+    shacl:sparql [
+        shacl:message "生存模型 C-index 必须 ≥ 0.85"@zh ;
+        shacl:select """
+            PREFIX hfsco-act: <http://huyanzhao.org/ontology/hfsco/actuarial#>
+            SELECT $this ?cindex WHERE {
+                $this a hfsco-act:SurvivalModel .
+                $this hfsco-act:hasCIndex ?cindex .
+                FILTER (?cindex < 0.85)
+            }
+        """ ;
+    ] .
+
+# ============================================================
+# 9. 地理环境空间约束
+# ============================================================
+
+hfsco-geo:SpatialFeatureConstraint a shacl:NodeShape ;
+    rdfs:label "空间要素 GeoSPARQL 合规约束"@zh, "Spatial Feature GeoSPARQL Compliance Constraint"@en ;
+    shacl:targetClass hfsco-geo:Landform ;
+    shacl:property [
+        shacl:path rdfs:subClassOf ;
+        shacl:hasValue geosparql:Feature ;
+        shacl:message "所有地形单元必须是 geosparql:Feature 的子类"@zh ;
+    ] .
+
+hfsco-geo:CoordinateConstraint a shacl:NodeShape ;
+    rdfs:label "地理坐标必须存在约束"@zh, "Geographic Coordinate Required Constraint"@en ;
+    shacl:targetClass hfsco-geo:Landform ;
+    shacl:property [
+        shacl:path hfsco:hasCoordinate ;
+        shacl:minCount 1 ;
+        shacl:message "每个地形单元必须有坐标 (hfsco:hasCoordinate)"@zh ;
+    ] .
+
+# ============================================================
+# 10. 精算 Level 1A 10 项假设完整性
+# ============================================================
+
+hfsco-act:Level1A10Assumptions a shacl:NodeShape ;
+    rdfs:label "Level 1A 10 项假设完整性约束"@zh, "Level 1A 10 Assumptions Completeness Constraint"@en ;
+    shacl:targetClass hfsco-act:Level1AAssumption ;
+    shacl:property [
+        shacl:path rdfs:comment ;
+        shacl:minCount 1 ;
+        shacl:message "必须在注释中说明 10 项假设达标情况"@zh ;
+    ] .
+    shacl:sparql [
+        shacl:message "必须关联精算备忘录验证 (hfsco-act:validatesAgainst)"@zh ;
+        shacl:select """
+            PREFIX hfsco-act: <http://huyanzhao.org/ontology/hfsco/actuarial#>
+            SELECT $this WHERE {
+                $this a hfsco-act:Level1AAssumption .
+                FILTER NOT EXISTS { $this hfsco-act:validatesAgainst ?memo . }
+            }
+        """ ;
+    ] .
+
+# ============================================================
+# 10. 命名规范 SPARQL 约束 (补强)
+# ============================================================
+
+hfsco:ClassNamingPascalCase a shacl:NodeShape ;
+    rdfs:label "类名 PascalCase 约束"@zh, "Class PascalCase Naming Constraint"@en ;
+    shacl:targetClass owl:Class ;
+    shacl:sparql [
+        shacl:message "类名必须符合 PascalCase 规范 (如 DragonVein, ChineseGrimAge)"@zh ;
+        shacl:select """
+            PREFIX hfsco: <http://huyanzhao.org/ontology/hfsco#>
+            SELECT $this ?localname WHERE {
+                $this a owl:Class .
+                BIND(STRAFTER(STR($this), STR(hfsco:)) AS ?localname)
+                FILTER (!REGEX(?localname, "^[A-Z][a-zA-Z0-9]*$"))
+                FILTER (!STRSTARTS(STR($this), "http://huyanzhao.org/ontology/hfsco"))
+            }
+        """ ;
+    ] .
+
+hfsco:ObjectPropertyCamelCase a shacl:NodeShape ;
+    rdfs:label "对象属性 camelCase 动词开头约束"@zh, "Object Property camelCase Verb Constraint"@en ;
+    shacl:targetClass owl:ObjectProperty ;
+    shacl:sparql [
+        shacl:message "对象属性名必须符合 camelCase 且以动词开头 (如 hasPart, flowsTo, inheritsFrom)"@zh ;
+        shacl:select """
+            PREFIX hfsco: <http://huyanzhao.org/ontology/hfsco#>
+            SELECT $this ?localname WHERE {
+                $this a owl:ObjectProperty .
+                BIND(STRAFTER(STR($this), STR(hfsco:)) AS ?localname)
+                FILTER (!REGEX(?localname, "^[a-z]+([A-Z][a-zA-Z0-9]*)*$"))
+                FILTER (!STRSTARTS(STR($this), "http://huyanzhao.org/ontology/hfsco"))
+            }
+        """ ;
+    ] .
+
+hfsco:DatatypePropertyCamelCase a shacl:NodeShape ;
+    rdfs:label "数据属性 camelCase 名词约束"@zh, "Datatype Property camelCase Noun Constraint"@en ;
+    shacl:targetClass owl:DatatypeProperty ;
+    shacl:sparql [
+        shacl:message "数据属性名必须符合 camelCase 且以名词/形容词开头 (如 hasConfidenceScore, hasLength, isAuspicious)"@zh ;
+        shacl:select """
+            PREFIX hfsco: <http://huyanzhao.org/ontology/hfsco#>
+            SELECT $this ?localname WHERE {
+                $this a owl:DatatypeProperty .
+                BIND(STRAFTER(STR($this), STR(hfsco:)) AS ?localname)
+                FILTER (!REGEX(?localname, "^[a-z]+([A-Z][a-zA-Z0-9]*)*$"))
+                FILTER (!STRSTARTS(STR($this), "http://huyanzhao.org/ontology/hfsco"))
+            }
+        """ ;
+    ] .
+
+hfsco:InstanceKebabCase a shacl:NodeShape ;
+    rdfs:label "实例 kebab-case 约束"@zh, "Instance kebab-case Naming Constraint"@en ;
+    shacl:targetClass owl:NamedIndividual ;
+    shacl:sparql [
+        shacl:message "实例名必须符合 kebab-case 规范 (如 dragon-vein-001, case-xiong-an-001)"@zh ;
+        shacl:select """
+            PREFIX hfsco: <http://huyanzhao.org/ontology/hfsco#>
+            SELECT $this ?localname WHERE {
+                $this a owl:NamedIndividual .
+                BIND(STRAFTER(STR($this), STR(hfsco:)) AS ?localname)
+                FILTER (!REGEX(?localname, "^[a-z0-9]+(-[a-z0-9]+)*$"))
+                FILTER (!STRSTARTS(STR($this), "http://huyanzhao.org/ontology/hfsco"))
+            }
+        """ ;
+    ] .
